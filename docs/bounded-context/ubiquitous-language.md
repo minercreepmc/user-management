@@ -1,0 +1,29 @@
+- User
+- Profile
+- Authentication
+- Authorization
+- Registration
+- Login
+- Logout
+- Password
+- Username
+- Email
+- Role
+- Permission
+- Address
+- Preferences
+- Security question
+- Password reset
+- Two-factor authentication
+- User status (active, inactive, banned, etc.)
+- Last login date
+- Session
+- Account verification
+- Privacy settings
+- Terms of service acceptance
+- User activity log
+- User group
+- User notification settings
+- User avatar or profile picture
+- Bio or about me
+- User settings
