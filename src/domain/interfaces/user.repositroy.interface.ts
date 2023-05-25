@@ -6,7 +6,7 @@ import { RepositoryPort } from 'common-base-classes';
 export interface UserRepositoryPort
   extends RepositoryPort<UserAggregate, UserAggregateDetails> {
   findOneByEmail(email: UserEmailValueObject): Promise<UserAggregate>;
-  findOneByUserName(username: UserNameValueObject): Promise<UserAggregate>;
+  findOneByUsername(username: UserNameValueObject): Promise<UserAggregate>;
 }
 
 export const userRepositoryDiToken = Symbol('USER_REPOSITORY');

@@ -21,10 +21,10 @@ export class UserTypeOrmRepository
 {
   constructor(
     @InjectRepository(UserTypeOrmModel)
-    repository: Repository<UserTypeOrmModel>,
+    readonly typeOrmRepository: Repository<UserTypeOrmModel>,
   ) {
     super(
-      repository,
+      typeOrmRepository,
       new UserTypeormMapper(UserAggregate, UserTypeOrmModel),
       new UserTypeOrmQueryMapper(),
       new Logger(UserTypeOrmRepository.name),
@@ -35,7 +35,7 @@ export class UserTypeOrmRepository
     const model = await this.typeOrmRepository.findOne({ where });
     return model ? this.typeOrmMapper.toDomain(model) : null;
   }
-  async findOneByUserName(
+  async findOneByUsername(
     username: UserNameValueObject,
   ): Promise<UserAggregate> {
     const where = this.queryMapper.toQuery({ username });

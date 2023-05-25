@@ -5,7 +5,7 @@ import {
   OrmModelDetails,
 } from 'nest-typeorm-common-classes';
 import { UserTypeOrmModel } from './user.typeorm.model';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import {
   UserEmailValueObject,
   UserFirstNameValueObject,

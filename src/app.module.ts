@@ -1,4 +1,5 @@
 import { RegisterGuestHttpController } from '@controllers/http/register-guest';
+import { RegisterMemberHttpController } from '@controllers/http/register-member';
 import { DatabaseModule } from '@database/di';
 import {
   UserTypeOrmModel,
@@ -18,6 +19,12 @@ import {
   RegisterGuestMapper,
   RegisterGuestProcess,
 } from '@use-cases/register-guest/application-services';
+import { RegisterMemberHandler } from '@use-cases/register-member';
+import {
+  RegisterMemberMapper,
+  RegisterMemberProcess,
+  RegisterMemberValidator,
+} from '@use-cases/register-member/application-services';
 
 // Domain
 const domainServices: Provider[] = [
@@ -29,7 +36,7 @@ const domainServices: Provider[] = [
 const repositories: Provider[] = [
   {
     provide: userRepositoryDiToken,
-    useValue: UserTypeOrmRepository,
+    useClass: UserTypeOrmRepository,
   },
 ];
 
@@ -40,12 +47,20 @@ const registerGuestUseCase: Provider[] = [
   RegisterGuestMapper,
 ];
 
-const useCases = [...registerGuestUseCase];
+const registerMemberUseCase: Provider[] = [
+  RegisterMemberHandler,
+  RegisterMemberProcess,
+  RegisterMemberValidator,
+  RegisterMemberMapper,
+];
+
+const useCases = [...registerGuestUseCase, ...registerMemberUseCase];
 
 // Controllers
 const registerGuestControllers = [RegisterGuestHttpController];
+const registerMemberControllers = [RegisterMemberHttpController];
 
-const controllers = [...registerGuestControllers];
+const controllers = [...registerGuestControllers, ...registerMemberControllers];
 
 // Vendors
 const vendors = [CqrsModule, TypeOrmModule.forFeature([UserTypeOrmModel])];

@@ -5,14 +5,12 @@ import {
   UserIdValueObject,
   UserLastNameValueObject,
   UserNameValueObject,
-  UserPasswordValueObject,
   UserRoleValueObject,
 } from '@value-objects/user';
 import { DomainEvent } from 'common-base-classes';
 
 export interface MemberRegisteredDomainEventDetails {
   username: UserNameValueObject;
-  password: UserPasswordValueObject;
   email: UserEmailValueObject;
   firstName: UserFirstNameValueObject;
   lastName: UserLastNameValueObject;
@@ -37,5 +35,21 @@ export class MemberRegisteredDomainEvent extends DomainEvent<MemberRegisteredDom
 
   get userId() {
     return this.entityId;
+  }
+
+  get username() {
+    return this.details.username;
+  }
+
+  get email() {
+    return this.details.email;
+  }
+
+  get firstName() {
+    return this.details.firstName;
+  }
+
+  get lastName() {
+    return this.details.lastName;
   }
 }

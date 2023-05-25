@@ -5,6 +5,12 @@ import { Column, Entity } from 'typeorm';
 export class UserTypeOrmModel extends AbstractTypeOrmModel {
   constructor(options?: UserTypeOrmModel) {
     super(options);
+    this.username = options?.username;
+    this.email = options?.email;
+    this.firstName = options?.firstName;
+    this.lastName = options?.lastName;
+    this.password = options?.password;
+    this.role = options?.role;
   }
   @Column()
   username: string;

@@ -23,9 +23,9 @@ export interface UserAggregateOptions {
 }
 
 export interface RegisterUserAggregateOptions {
-  username: UserNameValueObject;
-  password: UserPasswordValueObject;
-  email: UserEmailValueObject;
-  firstName: UserFirstNameValueObject;
-  lastName: UserLastNameValueObject;
+  username?: UserNameValueObject;
+  password?: UserPasswordValueObject;
+  email?: UserEmailValueObject;
+  firstName?: UserFirstNameValueObject;
+  lastName?: UserLastNameValueObject;
 }

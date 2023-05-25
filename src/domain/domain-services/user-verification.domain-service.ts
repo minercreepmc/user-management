@@ -1,31 +1,54 @@
 import { UserDomainExceptions } from '@domain-exceptions/user';
-import { UserRepositoryPort } from '@domain-interfaces';
+import { userRepositoryDiToken, UserRepositoryPort } from '@domain-interfaces';
+import { Inject, Injectable } from '@nestjs/common';
 import { UserEmailValueObject, UserNameValueObject } from '@value-objects/user';
-import { RegisterUserServiceOptions } from './user-registration.domain-serivce';
+import { RegisterMemberServiceOptions } from './user-registration.domain-serivce';
 
+@Injectable()
 export class UserVerificationDomainService {
-  constructor(private readonly userRepository: UserRepositoryPort) {}
-  async verifyUserRegistrationOptions(options: RegisterUserServiceOptions) {
+  constructor(
+    @Inject(userRepositoryDiToken)
+    private readonly userRepository: UserRepositoryPort,
+  ) {}
+  async verifyUserRegistrationOptions(options: RegisterMemberServiceOptions) {
     const { email, username } = options;
 
     await Promise.all([
-      this.checkEmailMustNotExist(email),
-      this.checkUserNameMustNotExist(username),
+      this.checkEmailMustBeUnique(email),
+      this.checkUserNameMustBeUnique(username),
     ]);
   }
 
-  async checkEmailMustNotExist(email: UserEmailValueObject) {
+  async isUserEmailUnique(email: UserEmailValueObject) {
     const exist = await this.userRepository.findOneByEmail(email);
     if (exist) {
-      throw new UserDomainExceptions.AlreadyExists();
+      return false;
+    }
+    return true;
+  }
+
+  async isUserNameUnique(username: UserNameValueObject) {
+    const exist = await this.userRepository.findOneByUsername(username);
+
+    if (exist) {
+      return false;
+    }
+
+    return true;
+  }
+
+  private async checkEmailMustBeUnique(email: UserEmailValueObject) {
+    const unique = await this.isUserEmailUnique(email);
+    if (!unique) {
+      throw new UserDomainExceptions.EmailAlreadyExists();
     }
   }
 
-  async checkUserNameMustNotExist(username: UserNameValueObject) {
-    const exist = await this.userRepository.findOneByUserName(username);
+  private async checkUserNameMustBeUnique(username: UserNameValueObject) {
+    const unique = await this.isUserNameUnique(username);
 
-    if (exist) {
-      throw new UserDomainExceptions.AlreadyExists();
+    if (!unique) {
+      throw new UserDomainExceptions.UsernameAlreadyExists();
     }
   }
 }

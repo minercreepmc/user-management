@@ -53,7 +53,6 @@ export class UserAggregate extends AbstractAggregateRoot<
       userId: this.id,
       details: {
         username,
-        password,
         email,
         firstName,
         lastName,
