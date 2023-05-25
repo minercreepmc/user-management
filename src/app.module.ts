@@ -7,6 +7,7 @@ import {
 } from '@database/repositories/typeorm/user';
 import { userRepositoryDiToken } from '@domain-interfaces';
 import {
+  PasswordManagementDomainService,
   UserRegistrationDomainService,
   UserVerificationDomainService,
 } from '@domain-services';
@@ -30,6 +31,7 @@ import {
 const domainServices: Provider[] = [
   UserRegistrationDomainService,
   UserVerificationDomainService,
+  PasswordManagementDomainService,
 ];
 
 // Infrastructure

@@ -5,21 +5,26 @@ import {
   OrmModelDetails,
 } from 'nest-typeorm-common-classes';
 import { UserTypeOrmModel } from './user.typeorm.model';
-import * as bcrypt from 'bcrypt';
 import {
   UserEmailValueObject,
   UserFirstNameValueObject,
   UserLastNameValueObject,
   UserNameValueObject,
-  UserPasswordValueObject,
   UserRoleValueObject,
 } from '@value-objects/user';
+import { PasswordManagementDomainService } from '@domain-services';
 
 export class UserTypeormMapper extends AbstractTypeOrmMapper<
   UserAggregate,
   UserAggregateDetails,
   UserTypeOrmModel
 > {
+  constructor(
+    private readonly passwordManagementDomainService: PasswordManagementDomainService,
+  ) {
+    super(UserAggregate, UserTypeOrmModel);
+  }
+
   protected async toPersistanceDetails(
     entity: UserAggregate,
   ): Promise<OrmModelDetails<UserTypeOrmModel>> {
@@ -51,7 +56,9 @@ export class UserTypeormMapper extends AbstractTypeOrmMapper<
     }
 
     if (entity.password) {
-      password = await this.hashingPassword(entity.password);
+      password = await this.passwordManagementDomainService.hashPassword(
+        entity.password.unpack(),
+      );
     }
 
     return {
@@ -99,11 +106,5 @@ export class UserTypeormMapper extends AbstractTypeOrmMapper<
       firstName,
       lastName,
     };
-  }
-
-  protected async hashingPassword(
-    password: UserPasswordValueObject,
-  ): Promise<string> {
-    return bcrypt.hash(password.unpack(), 10);
   }
 }

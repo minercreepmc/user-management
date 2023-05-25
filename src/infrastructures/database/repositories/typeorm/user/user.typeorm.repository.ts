@@ -9,6 +9,7 @@ import { UserTypeOrmQueryMapper } from './user.typeorm.query-mapper';
 import { Injectable, Logger } from '@nestjs/common';
 import { UserRepositoryPort } from '@domain-interfaces';
 import { UserNameValueObject, UserEmailValueObject } from '@value-objects/user';
+import { PasswordManagementDomainService } from '@domain-services';
 
 @Injectable()
 export class UserTypeOrmRepository
@@ -22,10 +23,11 @@ export class UserTypeOrmRepository
   constructor(
     @InjectRepository(UserTypeOrmModel)
     readonly typeOrmRepository: Repository<UserTypeOrmModel>,
+    readonly passwordManagementService: PasswordManagementDomainService,
   ) {
     super(
       typeOrmRepository,
-      new UserTypeormMapper(UserAggregate, UserTypeOrmModel),
+      new UserTypeormMapper(passwordManagementService),
       new UserTypeOrmQueryMapper(),
       new Logger(UserTypeOrmRepository.name),
     );
