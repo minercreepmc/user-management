@@ -20,6 +20,7 @@ import { Module, Provider } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RegisterAdminHandler } from '@use-cases/register-admin';
 import {
@@ -44,6 +45,7 @@ import {
   SignInProcess,
   SignInValidator,
 } from '@use-cases/sign-in/application-services';
+import { JwtStrategy } from './interface-adapters/strategy/jwt.strategy';
 
 // Domain
 const domainServices: Provider[] = [
@@ -123,7 +125,10 @@ const vendors = [
       expiresIn: '1d',
     },
   }),
+  PassportModule,
 ];
+
+const strategies = [JwtStrategy];
 
 @Module({
   imports: [
@@ -134,6 +139,6 @@ const vendors = [
     ...vendors,
   ],
   controllers: [...controllers],
-  providers: [...domainServices, ...repositories, ...useCases],
+  providers: [...domainServices, ...repositories, ...useCases, ...strategies],
 })
 export class AppModule {}

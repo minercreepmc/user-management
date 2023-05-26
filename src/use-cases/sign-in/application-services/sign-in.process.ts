@@ -13,7 +13,7 @@ export type AuthenticatedResult = {
   accessToken: string;
 };
 export type AuthenticationPayload = {
-  sub: string;
+  userId: string;
   username: string;
 };
 export type SignInProcessSuccess = AuthenticatedResult;
@@ -65,7 +65,7 @@ export class SignInProcess extends ProcessBase<
     }
 
     const payload: AuthenticationPayload = {
-      sub: user.id.unpack(),
+      userId: user.id.unpack(),
       username: user.username.unpack(),
     };
 

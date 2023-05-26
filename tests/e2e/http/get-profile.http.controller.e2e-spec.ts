@@ -54,7 +54,7 @@ describe('GetProfileHttpController', () => {
     const body: GetProfileHttpResponse = response.body;
 
     expect(body.username).toBe(user.username);
-    expect(body.sub).toBeDefined();
+    expect(body.userId).toBeDefined();
   });
 
   // Add more tests here
