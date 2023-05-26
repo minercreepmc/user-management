@@ -1,4 +1,5 @@
 import {
+  AdminRegisteredDomainEvent,
   GuestRegisteredDomainEvent,
   MemberRegisteredDomainEvent,
 } from '@domain-events/user';
@@ -50,6 +51,28 @@ export class UserAggregate extends AbstractAggregateRoot<
     this.lastName = lastName;
     this.role = UserRoleValueObject.createGuest();
     return new MemberRegisteredDomainEvent({
+      userId: this.id,
+      details: {
+        username,
+        email,
+        firstName,
+        lastName,
+        role: this.role,
+      },
+    });
+  }
+
+  registerAdmin(options: RegisterUserAggregateOptions) {
+    const { username, password, email, firstName, lastName } = options;
+
+    this.username = username;
+    this.password = password;
+    this.email = email;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.role = UserRoleValueObject.createAdmin();
+
+    return new AdminRegisteredDomainEvent({
       userId: this.id,
       details: {
         username,

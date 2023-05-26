@@ -5,6 +5,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { UserVerificationDomainService } from './user-verification.domain-service';
 
 export type RegisterMemberServiceOptions = RegisterUserAggregateOptions;
+export type RegisterAdminServiceOptions = RegisterUserAggregateOptions;
 
 @Injectable()
 export class UserRegistrationDomainService {
@@ -13,6 +14,14 @@ export class UserRegistrationDomainService {
     @Inject(userRepositoryDiToken)
     private readonly userRepository: UserRepositoryPort,
   ) {}
+
+  async registerGuest() {
+    const userAggregate = new UserAggregate();
+    const guestCreated = userAggregate.registerGuest();
+
+    return guestCreated;
+  }
+
   async registerMember(options: RegisterMemberServiceOptions) {
     await this.userVerificationService.verifyUserRegistrationOptions(options);
 
@@ -24,10 +33,14 @@ export class UserRegistrationDomainService {
     return userRegistered;
   }
 
-  async registerGuest() {
-    const userAggregate = new UserAggregate();
-    const guestCreated = userAggregate.registerGuest();
+  async registerAdmin(options: RegisterAdminServiceOptions) {
+    await this.userVerificationService.verifyUserRegistrationOptions(options);
 
-    return guestCreated;
+    const userAggregate = new UserAggregate();
+    const adminRegistered = userAggregate.registerAdmin(options);
+
+    await this.userRepository.save(userAggregate);
+
+    return adminRegistered;
   }
 }

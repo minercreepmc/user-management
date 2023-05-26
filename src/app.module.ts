@@ -1,3 +1,4 @@
+import { RegisterAdminHttpController } from '@controllers/http/register-admin';
 import { RegisterGuestHttpController } from '@controllers/http/register-guest';
 import { RegisterMemberHttpController } from '@controllers/http/register-member';
 import { SignInHttpController } from '@controllers/http/sign-in';
@@ -19,6 +20,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RegisterAdminHandler } from '@use-cases/register-admin';
+import {
+  RegisterAdminMapper,
+  RegisterAdminProcess,
+  RegisterAdminValidator,
+} from '@use-cases/register-admin/application-services';
 import { RegisterGuestHandler } from '@use-cases/register-guest';
 import {
   RegisterGuestMapper,
@@ -68,6 +75,13 @@ const registerMemberUseCase: Provider[] = [
   RegisterMemberMapper,
 ];
 
+const registerAdminUseCase: Provider[] = [
+  RegisterAdminHandler,
+  RegisterAdminProcess,
+  RegisterAdminValidator,
+  RegisterAdminMapper,
+];
+
 const signInUseCase: Provider[] = [
   SignInHandler,
   SignInProcess,
@@ -79,17 +93,20 @@ const useCases = [
   ...registerGuestUseCase,
   ...registerMemberUseCase,
   ...signInUseCase,
+  ...registerAdminUseCase,
 ];
 
 // Controllers
 const registerGuestControllers = [RegisterGuestHttpController];
 const registerMemberControllers = [RegisterMemberHttpController];
+const regsiterAdminControllers = [RegisterAdminHttpController];
 const signInControllers = [SignInHttpController];
 
 const controllers = [
   ...registerGuestControllers,
   ...registerMemberControllers,
   ...signInControllers,
+  ...regsiterAdminControllers,
 ];
 
 // Vendors
@@ -98,7 +115,6 @@ const vendors = [
   CqrsModule,
   TypeOrmModule.forFeature([UserTypeOrmModel]),
   JwtModule.register({
-    global: true,
     secret: configService.get('JWT_SECRET'),
     signOptions: {
       expiresIn: '1d',
