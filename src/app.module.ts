@@ -1,3 +1,4 @@
+import { GetProfileHttpController } from '@controllers/http/get-profile';
 import { RegisterAdminHttpController } from '@controllers/http/register-admin';
 import { RegisterGuestHttpController } from '@controllers/http/register-guest';
 import { RegisterMemberHttpController } from '@controllers/http/register-member';
@@ -101,12 +102,14 @@ const registerGuestControllers = [RegisterGuestHttpController];
 const registerMemberControllers = [RegisterMemberHttpController];
 const regsiterAdminControllers = [RegisterAdminHttpController];
 const signInControllers = [SignInHttpController];
+const getProfileController = [GetProfileHttpController];
 
 const controllers = [
   ...registerGuestControllers,
   ...registerMemberControllers,
   ...signInControllers,
   ...regsiterAdminControllers,
+  ...getProfileController,
 ];
 
 // Vendors

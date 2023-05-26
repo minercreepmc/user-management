@@ -12,6 +12,10 @@ import { SignInDomainOptions } from '../dtos';
 export type AuthenticatedResult = {
   accessToken: string;
 };
+export type AuthenticationPayload = {
+  sub: string;
+  username: string;
+};
 export type SignInProcessSuccess = AuthenticatedResult;
 export type SignInProcessFailure = Array<any>;
 
@@ -60,9 +64,9 @@ export class SignInProcess extends ProcessBase<
       this.exceptions.push(new UserDomainExceptions.CredentialDoesNotValid());
     }
 
-    const payload = {
-      sub: user.id,
-      username: user.username,
+    const payload: AuthenticationPayload = {
+      sub: user.id.unpack(),
+      username: user.username.unpack(),
     };
 
     this.value = {
