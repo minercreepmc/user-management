@@ -8,17 +8,9 @@ export class RegisterMemberValidator extends UserValidator {
   validate(command: RegisterMemberCommand): ValidationResponse {
     const { email, password, username, lastName, firstName } = command;
 
-    if (email !== undefined) {
-      this.validateUserEmail(email);
-    }
-
-    if (password !== undefined) {
-      this.validateUserPassword(password);
-    }
-
-    if (username !== undefined) {
-      this.validateUserName(username);
-    }
+    this.validateUserEmail(email);
+    this.validateUserPassword(password);
+    this.validateUserName(username);
 
     if (lastName !== undefined) {
       this.validateUserLastName(lastName);

@@ -77,6 +77,10 @@ export class UserAggregate extends AbstractAggregateRoot<
     return this.details.password;
   }
 
+  get hashed() {
+    return this.details.hashed;
+  }
+
   set email(value: UserEmailValueObject) {
     this.details.email = value;
   }

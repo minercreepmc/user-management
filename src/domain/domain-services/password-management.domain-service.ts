@@ -1,17 +1,54 @@
+import { UserAggregate } from '@aggregates/user';
+import { UserDomainExceptions } from '@domain-exceptions/user';
 import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import {
+  UserEmailValueObject,
+  UserPasswordValueObject,
+} from '@value-objects/user';
+import { PasswordHashingDomainService } from './password-hashing.domain-service';
+import { UserManagementDomainService } from './user-management.domain-service';
+
+export interface VerifyPasswordForEmailOptions {
+  email: UserEmailValueObject;
+  password: UserPasswordValueObject;
+}
+
+export interface AuthenticateUserResult {
+  isAuthenticated: boolean;
+  user?: UserAggregate;
+}
 
 @Injectable()
 export class PasswordManagementDomainService {
-  async hashPassword(password: string): Promise<string> {
-    const salt = await bcrypt.genSalt();
-    return bcrypt.hash(password, salt);
-  }
+  constructor(
+    private readonly userManagementService: UserManagementDomainService,
+    private readonly passwordHashingService: PasswordHashingDomainService,
+  ) {}
 
-  async verifyPassword(
-    password: string,
-    hashedPassword: string,
-  ): Promise<boolean> {
-    return bcrypt.compare(password, hashedPassword);
+  async authenticateUser(
+    userProvide: VerifyPasswordForEmailOptions,
+  ): Promise<AuthenticateUserResult> {
+    const existingUser = await this.userManagementService.findUserByEmail(
+      userProvide.email,
+    );
+    if (!existingUser) {
+      throw new UserDomainExceptions.EmailDoesNotExist();
+    }
+
+    const verified = await this.passwordHashingService.comparePasswords(
+      userProvide.password,
+      existingUser.hashed,
+    );
+
+    if (!verified) {
+      return {
+        isAuthenticated: false,
+      };
+    }
+
+    return {
+      isAuthenticated: true,
+      user: existingUser,
+    };
   }
 }

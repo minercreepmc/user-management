@@ -9,6 +9,7 @@ import {
   generateRandomLastName,
   generateRandomPassword,
   generateRandomUsername,
+  mapDomainExceptionsToObjects,
 } from '@utils/functions';
 import * as request from 'supertest';
 
@@ -40,13 +41,13 @@ describe('RegisterMemberHttpController', () => {
       .send(httpRequest)
       .expect(HttpStatus.UNPROCESSABLE_ENTITY);
 
-    const expectedExceptions = [
+    const expectedExceptions = mapDomainExceptionsToObjects([
       new UserDomainExceptions.UsernameDoesNotValid(),
       new UserDomainExceptions.PasswordDoesNotValid(),
       new UserDomainExceptions.EmailDoesNotValid(),
       new UserDomainExceptions.FirstNameDoesNotValid(),
       new UserDomainExceptions.LastNameDoesNotValid(),
-    ].map((error) => ({ code: error.code, message: error.message }));
+    ]);
 
     expect(response.body.message).toIncludeAllMembers(expectedExceptions);
   });
@@ -75,9 +76,9 @@ describe('RegisterMemberHttpController', () => {
       .send(httpRequest)
       .expect(HttpStatus.CONFLICT);
 
-    const expectedExceptions = [
+    const expectedExceptions = mapDomainExceptionsToObjects([
       new UserDomainExceptions.EmailAlreadyExists(),
-    ].map((error) => ({ code: error.code, message: error.message }));
+    ]);
 
     expect(response.body.message).toIncludeAllMembers(expectedExceptions);
   });
@@ -109,9 +110,9 @@ describe('RegisterMemberHttpController', () => {
       .send(httpRequest)
       .expect(HttpStatus.CONFLICT);
 
-    const expectedExceptions = [
+    const expectedExceptions = mapDomainExceptionsToObjects([
       new UserDomainExceptions.UsernameAlreadyExists(),
-    ].map((error) => ({ code: error.code, message: error.message }));
+    ]);
 
     expect(response.body.message).toIncludeAllMembers(expectedExceptions);
   });

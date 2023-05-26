@@ -15,7 +15,7 @@ export class RegisterMemberHttpRequest implements RegisterMemberCommand {
   password: string;
 
   @ApiProperty({
-    example: 'email@example',
+    example: 'email@example.com',
     description: 'Email',
   })
   email?: string;

@@ -9,7 +9,7 @@ export class UserTypeOrmModel extends AbstractTypeOrmModel {
     this.email = options?.email;
     this.firstName = options?.firstName;
     this.lastName = options?.lastName;
-    this.password = options?.password;
+    this.hashed = options?.hashed;
     this.role = options?.role;
   }
   @Column()
@@ -25,7 +25,7 @@ export class UserTypeOrmModel extends AbstractTypeOrmModel {
   lastName?: string;
 
   @Column()
-  password: string;
+  hashed: string;
 
   @Column({})
   role: string;

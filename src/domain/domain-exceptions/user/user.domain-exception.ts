@@ -30,6 +30,11 @@ export namespace UserDomainExceptions {
     readonly code = UserDomainExceptionCodes.EmailAlreadyExists;
   }
 
+  export class EmailDoesNotExist extends UserValidationException {
+    readonly message = 'User email does not exist';
+    readonly code = UserDomainExceptionCodes.EmailDoesNotExist;
+  }
+
   export class EmailDoesNotValid extends UserValidationException {
     readonly message = 'User email does not valid';
     readonly code = UserDomainExceptionCodes.EmailDoesNotValid;
@@ -48,5 +53,10 @@ export namespace UserDomainExceptions {
   export class PasswordDoesNotValid extends UserValidationException {
     readonly message = 'User password does not valid';
     readonly code = UserDomainExceptionCodes.PasswordDoesNotValid;
+  }
+
+  export class CredentialDoesNotValid extends UserValidationException {
+    readonly message = 'User credential does not valid';
+    readonly code = UserDomainExceptionCodes.CredentialDoesNotValid;
   }
 }

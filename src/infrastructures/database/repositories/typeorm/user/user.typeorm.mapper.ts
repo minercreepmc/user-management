@@ -8,11 +8,14 @@ import { UserTypeOrmModel } from './user.typeorm.model';
 import {
   UserEmailValueObject,
   UserFirstNameValueObject,
+  UserHashedPasswordValueObject,
   UserLastNameValueObject,
   UserNameValueObject,
   UserRoleValueObject,
 } from '@value-objects/user';
-import { PasswordManagementDomainService } from '@domain-services';
+import { PasswordHashingDomainService } from '@domain-services';
+
+export type UserTypeOrmDetails = OrmModelDetails<UserTypeOrmModel>;
 
 export class UserTypeormMapper extends AbstractTypeOrmMapper<
   UserAggregate,
@@ -20,91 +23,72 @@ export class UserTypeormMapper extends AbstractTypeOrmMapper<
   UserTypeOrmModel
 > {
   constructor(
-    private readonly passwordManagementDomainService: PasswordManagementDomainService,
+    private readonly passwordHashingService: PasswordHashingDomainService,
   ) {
     super(UserAggregate, UserTypeOrmModel);
   }
 
   protected async toPersistanceDetails(
     entity: UserAggregate,
-  ): Promise<OrmModelDetails<UserTypeOrmModel>> {
-    let email: string;
-    let role: string;
-    let username: string;
-    let firstName: string;
-    let lastName: string;
-    let password: string;
+  ): Promise<UserTypeOrmDetails> {
+    const details: UserTypeOrmDetails = {} as UserTypeOrmDetails;
 
     if (entity.role) {
-      role = entity.role.unpack();
+      details.role = entity.role.unpack();
     }
 
     if (entity.email) {
-      email = entity.email.unpack();
+      details.email = entity.email.unpack();
     }
 
     if (entity.username) {
-      username = entity.username.unpack();
+      details.username = entity.username.unpack();
     }
 
     if (entity.firstName) {
-      firstName = entity.firstName.unpack();
+      details.firstName = entity.firstName.unpack();
     }
 
     if (entity.lastName) {
-      lastName = entity.lastName.unpack();
+      details.lastName = entity.lastName.unpack();
     }
 
     if (entity.password) {
-      password = await this.passwordManagementDomainService.hashPassword(
-        entity.password.unpack(),
+      details.hashed = await this.passwordHashingService.hashPassword(
+        entity.password,
       );
     }
 
-    return {
-      role,
-      email,
-      username,
-      firstName,
-      lastName,
-      password,
-    };
+    return details;
   }
   protected async toDomainDetails(
     ormModel: UserTypeOrmModel,
   ): Promise<UserAggregateDetails> {
-    let email: UserEmailValueObject;
-    let username: UserNameValueObject;
-    let role: UserRoleValueObject;
-    let firstName: UserFirstNameValueObject;
-    let lastName: UserLastNameValueObject;
-
+    const details: UserAggregateDetails = {} as UserAggregateDetails;
     if (ormModel.email) {
-      email = new UserEmailValueObject(ormModel.email);
+      details.email = new UserEmailValueObject(ormModel.email);
     }
 
     if (ormModel.username) {
-      username = new UserNameValueObject(ormModel.username);
+      details.username = new UserNameValueObject(ormModel.username);
     }
 
     if (ormModel.role) {
-      role = new UserRoleValueObject(ormModel.role);
+      details.role = new UserRoleValueObject(ormModel.role);
     }
 
     if (ormModel.firstName) {
-      firstName = new UserFirstNameValueObject(ormModel.firstName);
+      details.firstName = new UserFirstNameValueObject(ormModel.firstName);
     }
 
     if (ormModel.lastName) {
-      lastName = new UserLastNameValueObject(ormModel.lastName);
+      details.lastName = new UserLastNameValueObject(ormModel.lastName);
     }
 
-    return {
-      email,
-      username,
-      role,
-      firstName,
-      lastName,
-    };
+    if (ormModel.hashed) {
+      details.hashed = new UserHashedPasswordValueObject(ormModel.hashed);
+    }
+
+    return details;
   }
 }

@@ -1,6 +1,7 @@
 import {
   UserEmailValueObject,
   UserFirstNameValueObject,
+  UserHashedPasswordValueObject,
   UserIdValueObject,
   UserLastNameValueObject,
   UserNameValueObject,
@@ -11,6 +12,7 @@ import {
 export interface UserAggregateDetails {
   username: UserNameValueObject;
   password?: UserPasswordValueObject;
+  hashed?: UserHashedPasswordValueObject;
   email?: UserEmailValueObject;
   firstName?: UserFirstNameValueObject;
   lastName?: UserLastNameValueObject;
