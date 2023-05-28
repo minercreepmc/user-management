@@ -1,9 +1,14 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { RegisterMemberResponseDto } from '@use-cases/register-member/dtos';
 
 export class RegisterMemberHttpResponse implements RegisterMemberResponseDto {
+  @ApiProperty()
   username: string;
+  @ApiProperty()
   email?: string;
+  @ApiProperty()
   firstName?: string;
+  @ApiProperty()
   lastName?: string;
 
   constructor(dto: RegisterMemberResponseDto) {
