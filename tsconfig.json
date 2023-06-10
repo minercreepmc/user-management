@@ -47,6 +47,8 @@
       "@src/*": ["./src/*"],
       "@utils": ["./utils"],
       "@utils/*": ["./utils/*"],
+      "@modules": ["./src/modules"],
+      "@modules/*": ["./src/modules/*"],
       "@interface-adapters/*": ["./interface-adapters/*"]
     }
   },

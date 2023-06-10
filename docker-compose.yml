@@ -10,12 +10,6 @@ services:
       target: development
     volumes:
       - .:/usr/src/app
-    depends_on:
-      - postgres
-      - rabbitmq
-    links:
-      - postgres
-      - rabbitmq
     env_file:
       - .env
     command: npm run start:dev
@@ -28,25 +22,7 @@ services:
     restart: always
     env_file:
       - .env
-      #- ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
     volumes:
       - ./data/db:/var/lib/postgresql/data:U
     ports:
       - 8001:5432
-
-  rabbitmq:
-    container_name: user-management-message-broker
-    image: rabbitmq:3-management-alpine
-    hostname: rabbitmq
-    volumes:
-      - ./data/messages:/var/lib/rabbitmq:U
-    ports:
-      - 5001:5672
-      - 15001:15672
-
-  adminer:
-    container_name: user-management-adminer
-    image: adminer
-    restart: always
-    ports:
-      - '8901:8080'
