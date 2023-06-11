@@ -1,4 +1,4 @@
-import { RegisterMemberHttpController } from '@controllers/http/register-member';
+import { V1RegisterMemberHttpController } from '@controllers/http/v1';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtStrategy } from '@src/interface-adapters/strategy';
@@ -17,7 +17,7 @@ const applicationServices: Provider[] = [
   RegisterMemberValidator,
   RegisterMemberMapper,
 ];
-const controllers = [RegisterMemberHttpController];
+const controllers = [V1RegisterMemberHttpController];
 
 const sharedModules = [CqrsModule, DatabaseModule, DomainServiceModule];
 

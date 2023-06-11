@@ -2,19 +2,21 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '@src/app.module';
-import { RegisterMemberHttpRequest } from '@controllers/http/register-member';
 import {
   generateRandomEmail,
   generateRandomPassword,
   generateRandomUsername,
 } from '@utils/functions';
-import { GetProfileHttpResponse } from '@controllers/http/get-profile';
+import {
+  V1GetProfileHttpResponse,
+  V1RegisterMemberHttpRequest,
+} from '@controllers/http/v1';
 
 describe('GetProfileHttpController', () => {
   let app: INestApplication;
-  const profileUrl = '/profile';
-  const registerUrl = '/register/member';
-  const loginUrl = '/sign-in';
+  const profileUrl = '/api/v1/profile';
+  const registerUrl = '/api/v1/register/member';
+  const loginUrl = '/api/v1/sign-in';
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -30,7 +32,7 @@ describe('GetProfileHttpController', () => {
   });
 
   it('should get profile if you logged in', async () => {
-    const user: RegisterMemberHttpRequest = {
+    const user: V1RegisterMemberHttpRequest = {
       username: generateRandomUsername(),
       email: generateRandomEmail(),
       password: generateRandomPassword(),
@@ -51,7 +53,7 @@ describe('GetProfileHttpController', () => {
       .set('Authorization', `Bearer ${signInResponse.body.access_token}`)
       .expect(HttpStatus.OK);
 
-    const body: GetProfileHttpResponse = response.body;
+    const body: V1GetProfileHttpResponse = response.body;
 
     expect(body.username).toBe(user.username);
     expect(body.userId).toBeDefined();

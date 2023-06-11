@@ -1,4 +1,4 @@
-import { RegisterGuestHttpController } from '@controllers/http/register-guest';
+import { V1RegisterGuestHttpController } from '@controllers/http/v1';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtStrategy } from '@src/interface-adapters/strategy';
@@ -15,7 +15,7 @@ const applicationServices: Provider[] = [
   RegisterGuestProcess,
   RegisterGuestMapper,
 ];
-const controllers = [RegisterGuestHttpController];
+const controllers = [V1RegisterGuestHttpController];
 const sharedModules = [CqrsModule, DomainServiceModule, DatabaseModule];
 
 @Module({

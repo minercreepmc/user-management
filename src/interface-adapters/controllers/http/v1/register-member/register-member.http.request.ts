@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { RegisterMemberCommand } from '@use-cases/register-member/dtos';
 
-export class RegisterMemberHttpRequest implements RegisterMemberCommand {
+export class V1RegisterMemberHttpRequest implements RegisterMemberCommand {
   @ApiProperty({
     example: 'username',
     description: 'Username',

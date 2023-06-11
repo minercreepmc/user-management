@@ -3,9 +3,9 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '@src/app.module';
 import {
-  RegisterAdminHttpRequest,
-  RegisterAdminHttpResponse,
-} from '@controllers/http/register-admin';
+  V1RegisterAdminHttpRequest,
+  V1RegisterAdminHttpResponse,
+} from '@controllers/http/v1';
 import {
   generateRandomEmail,
   generateRandomPassword,
@@ -16,7 +16,7 @@ import { UserDomainExceptions } from '@domain-exceptions/user';
 
 describe('RegisterAdminHttpController', () => {
   let app: INestApplication;
-  const adminRegistrationUrl = '/register/admin';
+  const adminRegistrationUrl = '/api/v1/register/admin';
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -29,7 +29,7 @@ describe('RegisterAdminHttpController', () => {
 
   it('it should deny admin registration if api key is incorrect', async () => {
     const incorrectApiKey = 'incorrect-api-key';
-    const httpRequest: RegisterAdminHttpRequest = {
+    const httpRequest: V1RegisterAdminHttpRequest = {
       email: generateRandomEmail(),
       username: generateRandomUsername(),
       password: generateRandomPassword(),
@@ -44,7 +44,7 @@ describe('RegisterAdminHttpController', () => {
 
   it('it should not register admin if request is invalid', async () => {
     const apiKey = process.env.ADMIN_API_KEY;
-    const httpRequest: RegisterAdminHttpRequest = {
+    const httpRequest: V1RegisterAdminHttpRequest = {
       email: '',
       username: '',
       password: '',
@@ -67,7 +67,7 @@ describe('RegisterAdminHttpController', () => {
 
   it('should not register admin if email or username already exists', async () => {
     const apiKey = process.env.ADMIN_API_KEY;
-    const httpRequest: RegisterAdminHttpRequest = {
+    const httpRequest: V1RegisterAdminHttpRequest = {
       email: generateRandomEmail(),
       username: generateRandomUsername(),
       password: generateRandomPassword(),
@@ -95,7 +95,7 @@ describe('RegisterAdminHttpController', () => {
 
   it('should register admin', async () => {
     const apiKey = process.env.ADMIN_API_KEY;
-    const httpRequest: RegisterAdminHttpRequest = {
+    const httpRequest: V1RegisterAdminHttpRequest = {
       email: generateRandomEmail(),
       username: generateRandomUsername(),
       password: generateRandomPassword(),
@@ -107,7 +107,7 @@ describe('RegisterAdminHttpController', () => {
       .send(httpRequest)
       .expect(HttpStatus.CREATED);
 
-    const body: RegisterAdminHttpResponse = response.body;
+    const body: V1RegisterAdminHttpResponse = response.body;
 
     expect(body.email).toBe(httpRequest.email);
     expect(body.username).toBe(httpRequest.username);

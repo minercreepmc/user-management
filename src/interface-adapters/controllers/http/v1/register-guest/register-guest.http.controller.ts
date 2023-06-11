@@ -1,39 +1,38 @@
 import {
-  Body,
+  ConflictException,
   Controller,
   Post,
   UnprocessableEntityException,
-  UnauthorizedException,
-  HttpCode,
-  HttpStatus,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
   UseCaseCommandValidationExceptions,
   UseCaseProcessExceptions,
 } from '@use-cases/common';
-import { SignInCommand, SignInResponseDto } from '@use-cases/sign-in/dtos';
+import {
+  RegisterGuestCommand,
+  RegisterGuestResponseDto,
+} from '@use-cases/register-guest/dtos';
 import { match } from 'oxide.ts';
-import { SignInHttpRequest } from './sign-in.http.request';
-import { SignInHttpResponse } from './sign-in.http.response';
+import { V1RegisterGuestHttpResponse } from './register-guest.http.response';
 
-@Controller('sign-in')
-export class SignInHttpController {
+@Controller('/api/v1/register')
+export class V1RegisterGuestHttpController {
   constructor(private readonly commandBus: CommandBus) {}
 
-  @Post()
-  @HttpCode(HttpStatus.OK)
-  async execute(@Body() dto: SignInHttpRequest) {
-    const command = new SignInCommand(dto);
+  @Post('/guest')
+  async execute() {
+    const command = new RegisterGuestCommand();
     const result = await this.commandBus.execute(command);
     return match(result, {
-      Ok: (response: SignInResponseDto) => new SignInHttpResponse(response),
+      Ok: (response: RegisterGuestResponseDto) =>
+        new V1RegisterGuestHttpResponse(response),
       Err: (exception: Error) => {
         if (exception instanceof UseCaseCommandValidationExceptions) {
           throw new UnprocessableEntityException(exception.exceptions);
         }
         if (exception instanceof UseCaseProcessExceptions) {
-          throw new UnauthorizedException(exception.exceptions);
+          throw new ConflictException(exception.exceptions);
         }
         throw exception;
       },

@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { RegisterGuestHttpResponse } from '@controllers/http/register-guest';
+import { V1RegisterGuestHttpResponse } from '@controllers/http/v1';
 import { AppModule } from '@src/app.module';
 
 describe('RegisterGuestHttpController', () => {
   let app: INestApplication;
+  const registerGuestUrl = '/api/v1/register/guest';
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -18,10 +19,10 @@ describe('RegisterGuestHttpController', () => {
 
   it('RegisterGuestHttpController (POST)', async () => {
     const response = await request(app.getHttpServer())
-      .post('/register/guest')
+      .post(registerGuestUrl)
       .expect(201);
 
-    const body: RegisterGuestHttpResponse = response.body;
+    const body: V1RegisterGuestHttpResponse = response.body;
 
     expect(body).toHaveProperty('username');
     expect(body).toHaveProperty('userId');

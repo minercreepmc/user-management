@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { RegisterAdminResponseDto } from '@use-cases/register-admin/dtos';
 
-export class RegisterAdminHttpResponse implements RegisterAdminResponseDto {
+export class V1RegisterAdminHttpResponse implements RegisterAdminResponseDto {
   @ApiProperty()
   username: string;
   @ApiProperty()

@@ -15,20 +15,20 @@ import {
   RegisterMemberResponseDto,
 } from '@use-cases/register-member/dtos';
 import { match } from 'oxide.ts';
-import { RegisterMemberHttpRequest } from './register-member.http.request';
-import { RegisterMemberHttpResponse } from './register-member.http.response';
+import { V1RegisterMemberHttpRequest } from './register-member.http.request';
+import { V1RegisterMemberHttpResponse } from './register-member.http.response';
 
-@Controller('register')
-export class RegisterMemberHttpController {
+@Controller('/api/v1/register')
+export class V1RegisterMemberHttpController {
   constructor(private readonly commandBus: CommandBus) {}
 
   @Post('member')
-  async execute(@Body() dto: RegisterMemberHttpRequest) {
+  async execute(@Body() dto: V1RegisterMemberHttpRequest) {
     const command = new RegisterMemberCommand(dto);
     const result = await this.commandBus.execute(command);
     return match(result, {
       Ok: (response: RegisterMemberResponseDto) =>
-        new RegisterMemberHttpResponse(response),
+        new V1RegisterMemberHttpResponse(response),
       Err: (exception: Error) => {
         if (exception instanceof UseCaseCommandValidationExceptions) {
           throw new UnprocessableEntityException(exception.exceptions);

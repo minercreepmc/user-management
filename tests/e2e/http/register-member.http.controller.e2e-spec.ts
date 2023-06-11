@@ -1,4 +1,4 @@
-import { RegisterMemberHttpRequest } from '@controllers/http/register-member';
+import { V1RegisterMemberHttpRequest } from '@controllers/http/v1';
 import { UserDomainExceptions } from '@domain-exceptions/user';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -18,6 +18,8 @@ describe('RegisterMemberHttpController', () => {
   let existingEmail: string;
   let existingUsername: string;
 
+  const registerMemberUrl = '/api/v1/register/member';
+
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -28,7 +30,7 @@ describe('RegisterMemberHttpController', () => {
   });
 
   it('should not create member if request is invalid', async () => {
-    const httpRequest: RegisterMemberHttpRequest = {
+    const httpRequest: V1RegisterMemberHttpRequest = {
       username: '',
       password: '',
       email: '',
@@ -37,7 +39,7 @@ describe('RegisterMemberHttpController', () => {
     };
 
     const response = await request(app.getHttpServer())
-      .post('/register/member')
+      .post(registerMemberUrl)
       .send(httpRequest)
       .expect(HttpStatus.UNPROCESSABLE_ENTITY);
 
@@ -53,9 +55,9 @@ describe('RegisterMemberHttpController', () => {
   });
 
   it('should not create member if email already exists', async () => {
-    existingEmail = '7nqqc@example.com';
+    existingEmail = generateRandomEmail();
 
-    const httpRequest: RegisterMemberHttpRequest = {
+    const httpRequest: V1RegisterMemberHttpRequest = {
       username: generateRandomUsername(),
       password: generateRandomPassword(),
       email: existingEmail,
@@ -63,16 +65,19 @@ describe('RegisterMemberHttpController', () => {
       lastName: generateRandomLastName(),
     };
 
-    await request(app.getHttpServer()).post('/register/member').send({
-      username: generateRandomUsername(),
-      password: generateRandomPassword(),
-      email: existingEmail,
-      firstName: generateRandomFirstName(),
-      lastName: generateRandomLastName(),
-    });
+    await request(app.getHttpServer())
+      .post(registerMemberUrl)
+      .send({
+        username: generateRandomUsername(),
+        password: generateRandomPassword(),
+        email: existingEmail,
+        firstName: generateRandomFirstName(),
+        lastName: generateRandomLastName(),
+      })
+      .expect(HttpStatus.CREATED);
 
     const response = await request(app.getHttpServer())
-      .post('/register/member')
+      .post(registerMemberUrl)
       .send(httpRequest)
       .expect(HttpStatus.CONFLICT);
 
@@ -84,10 +89,10 @@ describe('RegisterMemberHttpController', () => {
   });
 
   it('should not create member if username already exists', async () => {
-    existingUsername = 'okeokeoke';
+    existingUsername = generateRandomUsername();
 
     await request(app.getHttpServer())
-      .post('/register/member')
+      .post(registerMemberUrl)
       .send({
         username: existingUsername,
         password: generateRandomPassword(),
@@ -97,7 +102,7 @@ describe('RegisterMemberHttpController', () => {
       })
       .expect(HttpStatus.CREATED);
 
-    const httpRequest: RegisterMemberHttpRequest = {
+    const httpRequest: V1RegisterMemberHttpRequest = {
       username: existingUsername,
       password: generateRandomPassword(),
       email: generateRandomEmail(),
@@ -106,7 +111,7 @@ describe('RegisterMemberHttpController', () => {
     };
 
     const response = await request(app.getHttpServer())
-      .post('/register/member')
+      .post(registerMemberUrl)
       .send(httpRequest)
       .expect(HttpStatus.CONFLICT);
 

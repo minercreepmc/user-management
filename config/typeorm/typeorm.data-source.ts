@@ -1,7 +1,3 @@
-import {
-  CreateUser1684832921800,
-  RenamePasswordToHashed1685017791850,
-} from '@database/migrations';
 import { UserTypeOrmModel } from '@database/repositories/typeorm/user';
 import { ConfigService } from '@nestjs/config';
 import { DataSource, DataSourceOptions } from 'typeorm';
@@ -15,7 +11,7 @@ export const typeOrmDataSourceOptions: DataSourceOptions = {
   password: configService.get('POSTGRES_PASSWORD'),
   database: configService.get('POSTGRES_DB'),
   entities: [UserTypeOrmModel],
-  migrations: [CreateUser1684832921800, RenamePasswordToHashed1685017791850],
+  migrations: [],
   //synchronize: true,
 };
 export const typeormDataSource = new DataSource(typeOrmDataSourceOptions);

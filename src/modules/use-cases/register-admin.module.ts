@@ -1,4 +1,4 @@
-import { RegisterAdminHttpController } from '@controllers/http/register-admin';
+import { V1RegisterAdminHttpController } from '@controllers/http/v1';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtStrategy } from '@src/interface-adapters/strategy';
@@ -17,7 +17,7 @@ const applicationServices: Provider[] = [
   RegisterAdminValidator,
   RegisterAdminMapper,
 ];
-const controllers = [RegisterAdminHttpController];
+const controllers = [V1RegisterAdminHttpController];
 const sharedModules = [CqrsModule, DatabaseModule, DomainServiceModule];
 
 @Module({

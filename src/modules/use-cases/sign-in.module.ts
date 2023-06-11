@@ -1,4 +1,4 @@
-import { SignInHttpController } from '@controllers/http/sign-in';
+import { V1SignInHttpController } from '@controllers/http/v1';
 import { Module, Provider } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
@@ -20,7 +20,7 @@ const applicationServices: Provider[] = [
   SignInMapper,
 ];
 
-const signInControllers = [SignInHttpController];
+const signInControllers = [V1SignInHttpController];
 
 const configService = new ConfigService();
 const sharedModules = [

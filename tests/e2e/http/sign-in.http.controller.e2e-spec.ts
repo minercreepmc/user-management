@@ -2,9 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import {
-  SignInHttpRequest,
-  SignInHttpResponse,
-} from '@controllers/http/sign-in';
+  V1SignInHttpRequest,
+  V1SignInHttpResponse,
+} from '@controllers/http/v1';
 import { UserDomainExceptions } from '@domain-exceptions/user';
 import {
   generateRandomEmail,
@@ -16,8 +16,8 @@ import { AppModule } from '@src/app.module';
 
 describe('SignInHttpController', () => {
   let app: INestApplication;
-  const signInUrl = '/sign-in';
-  const registerUrl = '/register/member';
+  const signInUrl = '/api/v1/sign-in';
+  const registerUrl = '/api/v1/register/member';
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -29,7 +29,7 @@ describe('SignInHttpController', () => {
   });
 
   it('should fail to sign in if either email or password is invalid', async () => {
-    const invalidRequest: SignInHttpRequest = {
+    const invalidRequest: V1SignInHttpRequest = {
       username: '',
       email: '',
       password: '',
@@ -50,7 +50,7 @@ describe('SignInHttpController', () => {
   });
 
   it('should fail to sign in if either email or password is incorrect', async () => {
-    const invalidRequest: SignInHttpRequest = {
+    const invalidRequest: V1SignInHttpRequest = {
       username: generateRandomUsername(),
       email: generateRandomEmail(),
       password: generateRandomPassword(),
@@ -69,7 +69,7 @@ describe('SignInHttpController', () => {
   });
 
   it('should sign in successfully if email and password are correct', async () => {
-    const validRequest: SignInHttpRequest = {
+    const validRequest: V1SignInHttpRequest = {
       username: generateRandomUsername(),
       email: generateRandomEmail(),
       password: generateRandomPassword(),
@@ -85,7 +85,7 @@ describe('SignInHttpController', () => {
       .send(validRequest)
       .expect(HttpStatus.OK);
 
-    const body: SignInHttpResponse = response.body;
+    const body: V1SignInHttpResponse = response.body;
 
     expect(body.access_token).toBeDefined();
   });

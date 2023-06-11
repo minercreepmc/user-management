@@ -1,7 +1,7 @@
-import { GetProfileHttpController } from '@controllers/http/get-profile';
+import { V1GetProfileHttpController } from '@controllers/http/v1';
 import { Module } from '@nestjs/common';
 
-const controllers = [GetProfileHttpController];
+const controllers = [V1GetProfileHttpController];
 
 @Module({
   controllers: [...controllers],
