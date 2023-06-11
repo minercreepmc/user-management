@@ -1,6 +1,11 @@
 import { UserAggregate } from '@aggregates/user/user.aggregate';
 import { RegisterUserAggregateOptions } from '@aggregates/user/user.aggregate.interface';
-import { userRepositoryDiToken, UserRepositoryPort } from '@domain-interfaces';
+import {
+  unitOfWorkDiToken,
+  UnitOfWorkPort,
+  userRepositoryDiToken,
+  UserRepositoryPort,
+} from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
 import { UserVerificationDomainService } from './user-verification.domain-service';
 
@@ -13,6 +18,8 @@ export class UserRegistrationDomainService {
     private readonly userVerificationService: UserVerificationDomainService,
     @Inject(userRepositoryDiToken)
     private readonly userRepository: UserRepositoryPort,
+    @Inject(unitOfWorkDiToken)
+    private readonly unitOfWork: UnitOfWorkPort,
   ) {}
 
   async registerGuest() {
@@ -23,24 +30,28 @@ export class UserRegistrationDomainService {
   }
 
   async registerMember(options: RegisterMemberServiceOptions) {
-    await this.userVerificationService.verifyUserRegistrationOptions(options);
+    return this.unitOfWork.runInTransaction(async () => {
+      await this.userVerificationService.verifyUserRegistrationOptions(options);
 
-    const userAggregate = new UserAggregate();
-    const userRegistered = userAggregate.registerMember(options);
+      const userAggregate = new UserAggregate();
+      const userRegistered = userAggregate.registerMember(options);
 
-    await this.userRepository.save(userAggregate);
+      await this.userRepository.save(userAggregate);
 
-    return userRegistered;
+      return userRegistered;
+    });
   }
 
   async registerAdmin(options: RegisterAdminServiceOptions) {
-    await this.userVerificationService.verifyUserRegistrationOptions(options);
+    return this.unitOfWork.runInTransaction(async () => {
+      await this.userVerificationService.verifyUserRegistrationOptions(options);
 
-    const userAggregate = new UserAggregate();
-    const adminRegistered = userAggregate.registerAdmin(options);
+      const userAggregate = new UserAggregate();
+      const adminRegistered = userAggregate.registerAdmin(options);
 
-    await this.userRepository.save(userAggregate);
+      await this.userRepository.save(userAggregate);
 
-    return adminRegistered;
+      return adminRegistered;
+    });
   }
 }

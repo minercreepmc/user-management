@@ -1,6 +1,7 @@
 import { UserAggregate } from '@aggregates/user';
 import { UserDomainExceptions } from '@domain-exceptions/user';
-import { Injectable } from '@nestjs/common';
+import { unitOfWorkDiToken, UnitOfWorkPort } from '@domain-interfaces';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   UserEmailValueObject,
   UserPasswordValueObject,
@@ -23,32 +24,36 @@ export class PasswordManagementDomainService {
   constructor(
     private readonly userManagementService: UserManagementDomainService,
     private readonly passwordHashingService: PasswordHashingDomainService,
+    @Inject(unitOfWorkDiToken)
+    private readonly unitOfWork: UnitOfWorkPort,
   ) {}
 
   async authenticateUser(
     userProvide: VerifyPasswordForEmailOptions,
   ): Promise<AuthenticateUserResult> {
-    const existingUser = await this.userManagementService.findUserByEmail(
-      userProvide.email,
-    );
-    if (!existingUser) {
-      throw new UserDomainExceptions.EmailDoesNotExist();
-    }
+    return this.unitOfWork.runInTransaction(async () => {
+      const existingUser = await this.userManagementService.findUserByEmail(
+        userProvide.email,
+      );
+      if (!existingUser) {
+        throw new UserDomainExceptions.EmailDoesNotExist();
+      }
 
-    const verified = await this.passwordHashingService.comparePasswords(
-      userProvide.password,
-      existingUser.hashed,
-    );
+      const verified = await this.passwordHashingService.comparePasswords(
+        userProvide.password,
+        existingUser.hashed,
+      );
 
-    if (!verified) {
+      if (!verified) {
+        return {
+          isAuthenticated: false,
+        };
+      }
+
       return {
-        isAuthenticated: false,
+        isAuthenticated: true,
+        user: existingUser,
       };
-    }
-
-    return {
-      isAuthenticated: true,
-      user: existingUser,
-    };
+    });
   }
 }
