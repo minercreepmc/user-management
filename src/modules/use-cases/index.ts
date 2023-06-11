@@ -1,5 +1,17 @@
-export * from './sign-in.module';
-export * from './get-profile.module';
-export * from './register-admin.module';
-export * from './register-guest.module';
-export * from './register-member.module';
+import { Module } from '@nestjs/common';
+import { GetProfileModule } from './get-profile.module';
+import { RegisterAdminModule } from './register-admin.module';
+import { RegisterGuestModule } from './register-guest.module';
+import { RegisterMemberModule } from './register-member.module';
+import { SignInModule } from './sign-in.module';
+
+@Module({
+  imports: [
+    RegisterGuestModule,
+    RegisterMemberModule,
+    RegisterAdminModule,
+    SignInModule,
+    GetProfileModule,
+  ],
+})
+export class UseCaseModule {}

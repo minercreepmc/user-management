@@ -1,53 +1,26 @@
 import { RegisterGuestHttpController } from '@controllers/http/register-guest';
-import {
-  UserTypeOrmModel,
-  UserTypeOrmRepository,
-} from '@database/repositories/typeorm/user';
-import { userRepositoryDiToken } from '@domain-interfaces';
-import {
-  PasswordHashingDomainService,
-  UserRegistrationDomainService,
-  UserVerificationDomainService,
-} from '@domain-services';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtStrategy } from '@src/interface-adapters/strategy';
 import { RegisterGuestHandler } from '@use-cases/register-guest';
 import {
   RegisterGuestMapper,
   RegisterGuestProcess,
 } from '@use-cases/register-guest/application-services';
+import { DomainServiceModule } from '../domain';
+import { DatabaseModule } from '@modules/infrastructures/database';
 
-const repositories: Provider[] = [
-  {
-    provide: userRepositoryDiToken,
-    useClass: UserTypeOrmRepository,
-  },
-];
-
-const domainServices: Provider[] = [
-  UserRegistrationDomainService,
-  UserVerificationDomainService,
-  PasswordHashingDomainService,
-];
-
-const registerGuestUseCase: Provider[] = [
+const applicationServices: Provider[] = [
   RegisterGuestHandler,
   RegisterGuestProcess,
   RegisterGuestMapper,
 ];
-const registerGuestControllers = [RegisterGuestHttpController];
-const vendors = [CqrsModule, TypeOrmModule.forFeature([UserTypeOrmModel])];
+const controllers = [RegisterGuestHttpController];
+const sharedModules = [CqrsModule, DomainServiceModule, DatabaseModule];
 
 @Module({
-  imports: [...vendors],
-  controllers: [...registerGuestControllers],
-  providers: [
-    ...registerGuestUseCase,
-    ...domainServices,
-    ...repositories,
-    JwtStrategy,
-  ],
+  imports: [...sharedModules],
+  controllers: [...controllers],
+  providers: [...applicationServices, JwtStrategy],
 })
 export class RegisterGuestModule {}

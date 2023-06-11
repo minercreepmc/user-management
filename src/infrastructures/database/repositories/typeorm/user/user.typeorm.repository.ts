@@ -7,9 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserTypeormMapper } from './user.typeorm.mapper';
 import { UserTypeOrmQueryMapper } from './user.typeorm.query-mapper';
 import { Injectable, Logger } from '@nestjs/common';
-import { UserRepositoryPort } from '@domain-interfaces';
 import { UserNameValueObject, UserEmailValueObject } from '@value-objects/user';
 import { PasswordHashingDomainService } from '@domain-services';
+import { RepositoryPort } from 'common-base-classes';
 
 @Injectable()
 export class UserTypeOrmRepository
@@ -18,7 +18,7 @@ export class UserTypeOrmRepository
     UserAggregateDetails,
     UserTypeOrmModel
   >
-  implements UserRepositoryPort
+  implements RepositoryPort<UserAggregate, UserAggregateDetails>
 {
   constructor(
     @InjectRepository(UserTypeOrmModel)

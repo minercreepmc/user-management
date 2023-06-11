@@ -1,18 +1,6 @@
 import { RegisterAdminHttpController } from '@controllers/http/register-admin';
-import {
-  UserTypeOrmModel,
-  UserTypeOrmRepository,
-} from '@database/repositories/typeorm/user';
-import { userRepositoryDiToken } from '@domain-interfaces';
-import {
-  PasswordHashingDomainService,
-  UserManagementDomainService,
-  UserRegistrationDomainService,
-  UserVerificationDomainService,
-} from '@domain-services';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtStrategy } from '@src/interface-adapters/strategy';
 import { RegisterAdminHandler } from '@use-cases/register-admin';
 import {
@@ -20,37 +8,21 @@ import {
   RegisterAdminProcess,
   RegisterAdminValidator,
 } from '@use-cases/register-admin/application-services';
+import { DomainServiceModule } from '../domain';
+import { DatabaseModule } from '@modules/infrastructures/database';
 
-const repositories: Provider[] = [
-  {
-    provide: userRepositoryDiToken,
-    useClass: UserTypeOrmRepository,
-  },
-];
-
-const domainServices: Provider[] = [
-  UserManagementDomainService,
-  UserRegistrationDomainService,
-  PasswordHashingDomainService,
-  UserVerificationDomainService,
-];
-const registerAdminUseCase: Provider[] = [
+const applicationServices: Provider[] = [
   RegisterAdminHandler,
   RegisterAdminProcess,
   RegisterAdminValidator,
   RegisterAdminMapper,
 ];
-const regsiterAdminControllers = [RegisterAdminHttpController];
-const vendors = [CqrsModule, TypeOrmModule.forFeature([UserTypeOrmModel])];
+const controllers = [RegisterAdminHttpController];
+const sharedModules = [CqrsModule, DatabaseModule, DomainServiceModule];
 
 @Module({
-  imports: [...vendors],
-  controllers: [...regsiterAdminControllers],
-  providers: [
-    ...registerAdminUseCase,
-    ...domainServices,
-    ...repositories,
-    JwtStrategy,
-  ],
+  imports: [...sharedModules],
+  controllers: [...controllers],
+  providers: [...applicationServices, JwtStrategy],
 })
 export class RegisterAdminModule {}

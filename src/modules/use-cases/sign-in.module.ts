@@ -1,20 +1,8 @@
 import { SignInHttpController } from '@controllers/http/sign-in';
-import {
-  UserTypeOrmModel,
-  UserTypeOrmRepository,
-} from '@database/repositories/typeorm/user';
-import { userRepositoryDiToken } from '@domain-interfaces';
-import {
-  PasswordHashingDomainService,
-  PasswordManagementDomainService,
-  UserManagementDomainService,
-} from '@domain-services';
 import { Module, Provider } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtStrategy } from '@src/interface-adapters/strategy';
 import { SignInHandler } from '@use-cases/sign-in';
 import {
@@ -22,22 +10,10 @@ import {
   SignInProcess,
   SignInValidator,
 } from '@use-cases/sign-in/application-services';
-import { DatabaseModule } from '../database';
+import { DomainServiceModule } from '../domain';
+import { DatabaseModule } from '@modules/infrastructures/database';
 
-const repositories: Provider[] = [
-  {
-    provide: userRepositoryDiToken,
-    useClass: UserTypeOrmRepository,
-  },
-];
-
-const domainServices: Provider[] = [
-  UserManagementDomainService,
-  PasswordManagementDomainService,
-  PasswordHashingDomainService,
-];
-
-const signInUseCase: Provider[] = [
+const applicationServices: Provider[] = [
   SignInHandler,
   SignInProcess,
   SignInValidator,
@@ -47,12 +23,10 @@ const signInUseCase: Provider[] = [
 const signInControllers = [SignInHttpController];
 
 const configService = new ConfigService();
-
-const vendors = [
+const sharedModules = [
   CqrsModule,
   DatabaseModule,
-  TypeOrmModule.forFeature([UserTypeOrmModel]),
-  PassportModule,
+  DomainServiceModule,
   JwtModule.register({
     secret: configService.get('JWT_SECRET'),
     signOptions: {
@@ -62,13 +36,8 @@ const vendors = [
 ];
 
 @Module({
-  imports: [...vendors],
+  imports: [...sharedModules],
   controllers: [...signInControllers],
-  providers: [
-    ...domainServices,
-    ...signInUseCase,
-    JwtStrategy,
-    ...repositories,
-  ],
+  providers: [...applicationServices, JwtStrategy],
 })
 export class SignInModule {}
