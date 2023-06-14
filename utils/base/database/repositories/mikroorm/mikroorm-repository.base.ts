@@ -30,9 +30,11 @@ export abstract class MikroOrmRepositoryBase<
 
   async save(entity: DomainModel): Promise<DomainModel> {
     const ormEntity = await this.mapper.toPersistance(entity);
-    const saved = await this.entityManager.upsert<OrmModel>(ormEntity);
+    const saving = this.entityManager.create(this.mikroEntityName, ormEntity);
+    await this.entityManager.persistAndFlush(saving);
+
     this.logger.debug(`[Repository]: saved ${ormEntity.id}`);
-    return this.mapper.toDomain(saved);
+    return this.mapper.toDomain(ormEntity);
   }
 
   async delete(params: QueryParams<DomainModelDetails> = {}): Promise<boolean> {
@@ -61,6 +63,7 @@ export abstract class MikroOrmRepositoryBase<
 
   async findOne(params: QueryParams<DomainModelDetails>): Promise<DomainModel> {
     const query = this.queryMapper.toQuery(params);
+    console.log(query);
     const found = await this.entityManager.findOne<OrmModel>(
       this.mikroEntityName,
       query,

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+message AdminRegisteredProtoDetails {
+  optional string firstName = 1;
+  optional string lastName = 2;
+  optional string username = 3;
+  optional string email = 4;
+  string role = 5;
+}
+
+message AdminRegisteredProto {
+  string eventId = 1;
+  google.protobuf.Timestamp dateOccurred = 2;
+  string entityId = 3;
+  string eventName = 4;
+  string fromBoundedContext = 5;
+  AdminRegisteredProtoDetails details = 6;
+}

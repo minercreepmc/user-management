@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiSecurity } from '@nestjs/swagger';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { ApiKeyGuard } from '@src/interface-adapters/guards';
 import {
   UseCaseCommandValidationExceptions,
@@ -27,7 +27,7 @@ export class V1RegisterAdminHttpController {
 
   @Post('/admin')
   @UseGuards(ApiKeyGuard)
-  @ApiSecurity('x-api-key')
+  @ApiBearerAuth('x-api-key')
   async execute(@Body() dto: V1RegisterAdminHttpRequest) {
     const command = new RegisterAdminCommand(dto);
     const result = await this.commandBus.execute(command);

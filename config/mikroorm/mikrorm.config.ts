@@ -1,6 +1,7 @@
 import { UserMikroOrmModel } from '@database/repositories/mikroorm/user';
 import { MikroOrmModuleSyncOptions } from '@mikro-orm/nestjs';
 import { ConfigService } from '@nestjs/config';
+import { OutboxModel } from '@utils/base/database/outbox';
 
 const configService = new ConfigService();
 
@@ -12,7 +13,7 @@ const mikroOrmConfig: MikroOrmModuleSyncOptions = {
   password: configService.get('POSTGRES_PASSWORD'),
   dbName: configService.get('POSTGRES_DB'),
   autoLoadEntities: true,
-  entities: [UserMikroOrmModel],
+  entities: [UserMikroOrmModel, OutboxModel],
   migrations: {
     pathTs: './src/infrastructures/database/migrations',
   },

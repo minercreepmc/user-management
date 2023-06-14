@@ -5,6 +5,8 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import mikroOrmConfig from '@config/mikroorm/mikrorm.config';
 import { PasswordHashingDomainService } from '@domain-services';
 import { MikroOrmUnitOfWork } from '@utils/base/database/unit-of-work';
+import { OutboxService } from '@utils/base/database/outbox';
+import { IpcModule } from '../ipc';
 
 const repositories: Provider[] = [
   {
@@ -18,8 +20,8 @@ const repositories: Provider[] = [
 ];
 
 @Module({
-  imports: [MikroOrmModule.forRoot(mikroOrmConfig)],
-  providers: [...repositories, PasswordHashingDomainService],
+  imports: [MikroOrmModule.forRoot(mikroOrmConfig), IpcModule],
+  providers: [...repositories, PasswordHashingDomainService, OutboxService],
   exports: [...repositories],
 })
 export class DatabaseModule {}

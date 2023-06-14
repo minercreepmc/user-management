@@ -6,6 +6,7 @@ import {
   userRepositoryDiToken,
   UserRepositoryPort,
 } from '@domain-interfaces';
+import { OutboxServicePort } from '@domain-interfaces/outbox.interface';
 import { Inject, Injectable } from '@nestjs/common';
 import { UserVerificationDomainService } from './user-verification.domain-service';
 
@@ -30,28 +31,41 @@ export class UserRegistrationDomainService {
   }
 
   async registerMember(options: RegisterMemberServiceOptions) {
-    return this.unitOfWork.runInTransaction(async () => {
-      await this.userVerificationService.verifyUserRegistrationOptions(options);
+    return this.unitOfWork.runInTransaction(
+      async (outBoxService: OutboxServicePort) => {
+        await this.userVerificationService.verifyUserRegistrationOptions(
+          options,
+        );
 
-      const userAggregate = new UserAggregate();
-      const userRegistered = userAggregate.registerMember(options);
+        const userAggregate = new UserAggregate();
+        const memberRegisteredDomainEvent =
+          userAggregate.registerMember(options);
 
-      await this.userRepository.save(userAggregate);
+        await this.userRepository.save(userAggregate);
 
-      return userRegistered;
-    });
+        await outBoxService.addToOutboxAndSend(memberRegisteredDomainEvent);
+
+        return memberRegisteredDomainEvent;
+      },
+    );
   }
 
   async registerAdmin(options: RegisterAdminServiceOptions) {
-    return this.unitOfWork.runInTransaction(async () => {
-      await this.userVerificationService.verifyUserRegistrationOptions(options);
+    return this.unitOfWork.runInTransaction(
+      async (outBoxService: OutboxServicePort) => {
+        await this.userVerificationService.verifyUserRegistrationOptions(
+          options,
+        );
 
-      const userAggregate = new UserAggregate();
-      const adminRegistered = userAggregate.registerAdmin(options);
+        const userAggregate = new UserAggregate();
+        const adminRegistered = userAggregate.registerAdmin(options);
 
-      await this.userRepository.save(userAggregate);
+        await this.userRepository.save(userAggregate);
 
-      return adminRegistered;
-    });
+        await outBoxService.addToOutboxAndSend(adminRegistered);
+
+        return adminRegistered;
+      },
+    );
   }
 }

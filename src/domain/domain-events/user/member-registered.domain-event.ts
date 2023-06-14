@@ -52,4 +52,8 @@ export class MemberRegisteredDomainEvent extends DomainEvent<MemberRegisteredDom
   get lastName() {
     return this.details.lastName;
   }
+
+  get role() {
+    return this.details.role;
+  }
 }

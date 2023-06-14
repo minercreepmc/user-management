@@ -29,6 +29,8 @@
       "@value-objects/*": ["./src/domain/value-objects/*"],
       "@domain-events": ["./src/domain/domain-events"],
       "@domain-events/*": ["./src/domain/domain-events/*"],
+      "@integration-events": ["./src/domain/integration-events"],
+      "@integration-events/*": ["./src/domain/integration-events/*"],
       "@domain-services": ["./src/domain/domain-services"],
       "@domain-services/*": ["./src/domain/domain-services/*"],
       "@domain-exceptions": ["./src/domain/domain-exceptions"],
@@ -43,13 +45,15 @@
       "@controllers/*": ["./src/interface-adapters/controllers/*"],
       "@migrations": ["./src/infrastructures/database/migrations"],
       "@migrations/*": ["./src/infrastructures/database/migrations/*"],
+      "@modules": ["./src/modules"],
+      "@modules/*": ["./src/modules/*"],
       "@src": ["./src"],
       "@src/*": ["./src/*"],
       "@utils": ["./utils"],
       "@utils/*": ["./utils/*"],
-      "@modules": ["./src/modules"],
-      "@modules/*": ["./src/modules/*"],
-      "@interface-adapters/*": ["./interface-adapters/*"]
+      "@interface-adapters/*": ["./interface-adapters/*"],
+      "@protos": ["./protos"],
+      "@protos/*": ["./protos/*"]
     }
   },
   "include": [

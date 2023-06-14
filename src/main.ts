@@ -1,11 +1,11 @@
 import { swaggerOption } from '@config/swagger';
-import { typeormDataSource } from '@config/typeorm';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as fs from 'fs';
 import * as path from 'path';
+import { RmqService } from './modules/infrastructures/ipc/rmb';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -25,9 +25,12 @@ async function bootstrap() {
     }),
   );
 
-  await typeormDataSource.initialize();
+  const rmqService = app.get<RmqService>(RmqService);
+  app.connectMicroservice(rmqService.getOptions());
+
   app.enableCors();
 
   await app.listen(3000);
+  await app.startAllMicroservices();
 }
 bootstrap();

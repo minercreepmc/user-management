@@ -1,5 +1,4 @@
 import { UserAggregate, UserAggregateDetails } from '@aggregates/user';
-import { UserTypeOrmModel } from '@database/repositories/typeorm/user';
 import { UserRepositoryPort } from '@domain-interfaces';
 import { PasswordHashingDomainService } from '@domain-services';
 import { EntityManager } from '@mikro-orm/postgresql';
@@ -15,7 +14,7 @@ export class UserMikroOrmRepository
   extends MikroOrmRepositoryBase<
     UserAggregate,
     UserAggregateDetails,
-    UserTypeOrmModel
+    UserMikroOrmModel
   >
   implements UserRepositoryPort
 {

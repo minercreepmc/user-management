@@ -7,9 +7,10 @@ import {
 } from '@domain-services';
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../infrastructures/database';
+import { IpcModule } from '../infrastructures/ipc';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, IpcModule],
   providers: [
     PasswordHashingDomainService,
     PasswordManagementDomainService,
