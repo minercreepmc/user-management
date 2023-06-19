@@ -41,8 +41,10 @@
       "@use-cases/*": ["./src/use-cases/*"],
       "@database": ["./src/infrastructures/database"],
       "@database/*": ["./src/infrastructures/database/*"],
-      "@controllers": ["./src/interface-adapters/controllers"],
+      "@jontrollers": ["./src/interface-adapters/controllers"],
       "@controllers/*": ["./src/interface-adapters/controllers/*"],
+      "@message-handlers": ["./src/interface-adapters/message-handlers"],
+      "@message-handlers/*": ["./src/interface-adapters/message-handlers/*"],
       "@migrations": ["./src/infrastructures/database/migrations"],
       "@migrations/*": ["./src/infrastructures/database/migrations/*"],
       "@modules": ["./src/modules"],
@@ -52,8 +54,8 @@
       "@utils": ["./utils"],
       "@utils/*": ["./utils/*"],
       "@interface-adapters/*": ["./interface-adapters/*"],
-      "@protos": ["./protos"],
-      "@protos/*": ["./protos/*"]
+      "@shared": ["./shared"],
+      "@shared/*": ["./shared/*"]
     }
   },
   "include": [

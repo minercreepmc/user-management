@@ -1,17 +1,12 @@
-import {
-  messageBrokerDiToken,
-  MessageBrokerPort,
-} from '@domain-interfaces/message-broker.port';
+//import { messageBrokerDiToken, MessageBrokerPort } from '@domain-interfaces';
 import { EntityManager } from '@mikro-orm/core';
-import { Inject } from '@nestjs/common';
+//import { Inject } from '@nestjs/common';
 import { DomainEvent } from 'common-base-classes';
 import { OutboxModel } from './outbox.model';
 
 export class OutboxService {
   constructor(
-    private entityManager: EntityManager,
-    @Inject(messageBrokerDiToken)
-    private readonly messageBroker: MessageBrokerPort,
+    private entityManager: EntityManager, //@Inject(messageBrokerDiToken) //private readonly messageBroker: MessageBrokerPort,
   ) {}
 
   async addToOutboxAndSend(domainEvent: DomainEvent<any>): Promise<void> {
@@ -23,7 +18,7 @@ export class OutboxService {
     await this.entityManager.persistAndFlush(outboxEntry);
 
     try {
-      this.messageBroker.emit(domainEvent);
+      //this.messageBroker.emit(domainEvent);
 
       await this.entityManager.removeAndFlush(outboxEntry);
     } catch (error) {

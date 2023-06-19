@@ -10,6 +10,7 @@ import {
 } from '@use-cases/register-member/application-services';
 import { DomainServiceModule } from '../domain';
 import { DatabaseModule } from '@modules/infrastructures/database';
+import { V1RegisterMemberRmqMessageHandler } from '@message-handlers/rmq/v1';
 
 const applicationServices: Provider[] = [
   RegisterMemberHandler,
@@ -18,12 +19,13 @@ const applicationServices: Provider[] = [
   RegisterMemberMapper,
 ];
 const controllers = [V1RegisterMemberHttpController];
+const messageHandlers = [V1RegisterMemberRmqMessageHandler];
 
 const sharedModules = [CqrsModule, DatabaseModule, DomainServiceModule];
 
 @Module({
   imports: [...sharedModules],
-  controllers: [...controllers],
+  controllers: [...controllers, ...messageHandlers],
   providers: [...applicationServices, JwtStrategy],
 })
 export class RegisterMemberModule {}

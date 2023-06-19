@@ -12,31 +12,31 @@ interface RmqModuleOption {
   exports: [RmqService],
 })
 export class RmqModule {
-  static register({ name }: RmqModuleOption): DynamicModule {
+  static register(options: RmqModuleOption[]): DynamicModule {
     return {
       module: RmqModule,
       exports: [ClientsModule],
       imports: [
-        ClientsModule.registerAsync([
-          {
-            name,
+        ClientsModule.registerAsync(
+          options.map((option) => ({
+            name: option.name,
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => {
               const user = configService.get('RABBITMQ_USER');
               const password = configService.get('RABBITMQ_PASSWORD');
               const host = configService.get('RABBITMQ_HOST');
-              const queueName = configService.get('RABBITMQ_QUEUE_NAME');
+              const queue = configService.get('RABBITMQ_QUEUE_NAME');
 
               return {
                 transport: Transport.RMQ,
                 options: {
                   urls: [`amqp://${user}:${password}@${host}`],
-                  queue: queueName,
+                  queue: queue,
                 },
               };
             },
-          },
-        ]),
+          })),
+        ),
       ],
     };
   }

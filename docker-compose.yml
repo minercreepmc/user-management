@@ -26,3 +26,4 @@ services:
       - ./data/db:/var/lib/postgresql/data:U
     ports:
       - 8001:5432
+

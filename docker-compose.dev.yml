@@ -21,6 +21,23 @@ services:
     command: npm run start:dev
     ports:
       - 3001:3000
+    networks:
+      - user-management
+      - shared_network
+
+  rabbitmq:
+    container_name: user-message-broker
+    image: rabbitmq:3-management-alpine
+    hostname: rabbitmq
+    volumes:
+      - ./rabbitmq/messages:/var/lib/rabbitmq
+    env_file:
+      - .env
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - shared_network
 
   postgres:
     container_name: user-management-database
@@ -28,23 +45,12 @@ services:
     restart: always
     env_file:
       - .env
-      #- ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
     volumes:
       - ./data/db:/var/lib/postgresql/data
     ports:
       - 8001:5432
-
-  rabbitmq:
-    container_name: user-management-message-broker
-    image: rabbitmq:3-management-alpine
-    hostname: rabbitmq
-    volumes:
-      - ./data/messages:/var/lib/rabbitmq
-    env_file:
-      - .env
-    ports:
-      - 5672:5672
-      - 15672:15672
+    networks:
+      - user-management
 
   adminer:
     container_name: user-management-adminer
@@ -52,3 +58,11 @@ services:
     restart: always
     ports:
       - '8901:8080'
+    networks:
+      - user-management
+
+networks:
+  shared_network:
+    external: true
+  user-management:
+    driver: bridge
