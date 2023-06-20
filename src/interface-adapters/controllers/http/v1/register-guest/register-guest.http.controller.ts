@@ -1,6 +1,9 @@
 import { HttpPostControllerBase } from '@base/interface-adapters/http';
 import { Controller, Post } from '@nestjs/common';
-import { RegisterGuestRequestDto, RegisterGuestResponseDto } from '@use-cases/register-guest/dtos';
+import {
+  RegisterGuestRequestDto,
+  RegisterGuestResponseDto,
+} from '@use-cases/register-guest/dtos';
 import { RegisterMemberResponseDto } from '@use-cases/register-member/dtos';
 import { Mediator } from 'nestjs-mediator';
 import { V1RegisterMemberHttpResponse } from '../register-member';
