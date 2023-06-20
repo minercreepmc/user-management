@@ -1,43 +1,35 @@
+import { HttpPostControllerBase } from '@base/interface-adapters/http';
+import { Body, Controller, Post } from '@nestjs/common';
 import {
-  Body,
-  ConflictException,
-  Controller,
-  Post,
-  UnprocessableEntityException,
-} from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
-import {
-  UseCaseCommandValidationExceptions,
-  UseCaseProcessExceptions,
-} from '@use-cases/common';
-import {
-  RegisterMemberCommand,
+  RegisterMemberRequestDto,
   RegisterMemberResponseDto,
 } from '@use-cases/register-member/dtos';
-import { match } from 'oxide.ts';
+import { Mediator } from 'nestjs-mediator';
 import { V1RegisterMemberHttpRequest } from './register-member.http.request';
 import { V1RegisterMemberHttpResponse } from './register-member.http.response';
 
 @Controller('/api/v1/register')
-export class V1RegisterMemberHttpController {
-  constructor(private readonly commandBus: CommandBus) {}
+export class V1RegisterMemberHttpController extends HttpPostControllerBase<
+  V1RegisterMemberHttpRequest,
+  V1RegisterMemberHttpResponse
+> {
+  constructor(mediator: Mediator) {
+    super(mediator);
+  }
 
   @Post('member')
   async execute(@Body() dto: V1RegisterMemberHttpRequest) {
-    const command = new RegisterMemberCommand(dto);
-    const result = await this.commandBus.execute(command);
-    return match(result, {
-      Ok: (response: RegisterMemberResponseDto) =>
-        new V1RegisterMemberHttpResponse(response),
-      Err: (exception: Error) => {
-        if (exception instanceof UseCaseCommandValidationExceptions) {
-          throw new UnprocessableEntityException(exception.exceptions);
-        }
-        if (exception instanceof UseCaseProcessExceptions) {
-          throw new ConflictException(exception.exceptions);
-        }
-        throw exception;
-      },
-    });
+    return super.execute(dto);
+  }
+
+  createDto(
+    httpRequest: V1RegisterMemberHttpRequest,
+  ): RegisterMemberRequestDto {
+    return new RegisterMemberRequestDto(httpRequest);
+  }
+  createHttpResponse(
+    response: RegisterMemberResponseDto,
+  ): V1RegisterMemberHttpResponse {
+    return new V1RegisterMemberHttpResponse(response);
   }
 }

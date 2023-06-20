@@ -1,7 +1,7 @@
+import { ProcessBase } from '@base/use-cases';
 import { GuestRegisteredDomainEvent } from '@domain-events/user';
 import { UserRegistrationDomainService } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { ProcessBase } from '@use-cases/common';
 
 export type RegisterGuestProcessSuccess = GuestRegisteredDomainEvent;
 export type RegisterGuestProcessFailure = Array<any>;

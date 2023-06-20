@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { UserValidator } from '@use-cases/common/application-services/validators';
+import { UserValidator } from '@use-cases/application-services/validators';
 import { ValidationResponse } from 'common-base-classes';
-import { SignInCommand } from '../dtos';
+import { SignInRequestDto } from '../dtos';
 
 @Injectable()
 export class SignInValidator extends UserValidator {
-  validate(command: SignInCommand): ValidationResponse {
+  validate(command: SignInRequestDto): ValidationResponse {
     const { email, password, username } = command;
 
     this.validateUserName(username);

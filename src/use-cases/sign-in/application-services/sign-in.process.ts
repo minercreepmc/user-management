@@ -1,3 +1,5 @@
+import { ProcessBase } from '@base/use-cases';
+import { SignInCommand } from '@commands';
 import { UserDomainExceptions } from '@domain-exceptions/user';
 import {
   PasswordManagementDomainService,
@@ -5,9 +7,7 @@ import {
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ProcessBase } from '@use-cases/common';
 import { UserEmailValueObject } from '@value-objects/user';
-import { SignInDomainOptions } from '../dtos';
 
 export type AuthenticatedResult = {
   accessToken: string;
@@ -32,13 +32,13 @@ export class SignInProcess extends ProcessBase<
     super();
   }
 
-  async execute(userProvide: SignInDomainOptions) {
-    const { email } = userProvide;
+  async execute(command: SignInCommand) {
+    const { email } = command;
 
     await this.checkUserMustHaveRegistered(email);
 
     if (this.exceptions.length === 0) {
-      await this.signIn(userProvide);
+      await this.signIn(command);
     }
 
     return this.getValidationResult();
@@ -56,7 +56,7 @@ export class SignInProcess extends ProcessBase<
     }
   }
 
-  async signIn(userProvide: SignInDomainOptions) {
+  async signIn(userProvide: SignInCommand) {
     const { isAuthenticated, user } =
       await this.passwordManagementService.authenticateUser(userProvide);
 

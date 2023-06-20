@@ -9,6 +9,7 @@ import {
 } from '@use-cases/register-guest/application-services';
 import { DomainServiceModule } from '../domain';
 import { DatabaseModule } from '@modules/infrastructures/database';
+import { MediatorModule } from 'nestjs-mediator';
 
 const applicationServices: Provider[] = [
   RegisterGuestHandler,
@@ -16,7 +17,7 @@ const applicationServices: Provider[] = [
   RegisterGuestMapper,
 ];
 const controllers = [V1RegisterGuestHttpController];
-const sharedModules = [CqrsModule, DomainServiceModule, DatabaseModule];
+const sharedModules = [DomainServiceModule, DatabaseModule, MediatorModule];
 
 @Module({
   imports: [...sharedModules],

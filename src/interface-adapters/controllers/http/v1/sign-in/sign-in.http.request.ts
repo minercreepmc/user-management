@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { SignInCommand } from '@use-cases/sign-in/dtos';
 
-export class V1SignInHttpRequest implements SignInCommand {
+export class V1SignInHttpRequest {
   @ApiProperty({
     example: 'username',
     description: 'Username',

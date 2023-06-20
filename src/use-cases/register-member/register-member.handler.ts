@@ -1,47 +1,22 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import {
-  UseCaseCommandValidationExceptions,
-  UseCaseProcessExceptions,
-} from '@use-cases/common';
-import { Err, Ok } from 'oxide.ts';
+import { HandlerBase } from '@base/use-cases';
+import { RequestHandler } from 'nestjs-mediator';
 import {
   RegisterMemberMapper,
   RegisterMemberProcess,
   RegisterMemberValidator,
 } from './application-services';
-import { RegisterMemberCommand, RegisterMemberResult } from './dtos';
+import { RegisterMemberRequestDto, RegisterMemberResponseDto } from './dtos';
 
-@CommandHandler(RegisterMemberCommand)
-export class RegisterMemberHandler
-  implements ICommandHandler<RegisterMemberCommand, RegisterMemberResult>
-{
+@RequestHandler(RegisterMemberRequestDto)
+export class RegisterMemberHandler extends HandlerBase<
+  RegisterMemberRequestDto,
+  RegisterMemberResponseDto
+> {
   constructor(
-    private readonly validator: RegisterMemberValidator,
-    private readonly registerMemberProcess: RegisterMemberProcess,
-    private readonly mapper: RegisterMemberMapper,
-  ) {}
-
-  async execute(command: RegisterMemberCommand): Promise<RegisterMemberResult> {
-    const commandValidated = this.validator.validate(command);
-
-    if (!commandValidated.isValid) {
-      return Err(
-        new UseCaseCommandValidationExceptions(commandValidated.exceptions),
-      );
-    }
-
-    const domainOptions = this.mapper.toDomain(command);
-
-    const registerMemberResult = await this.registerMemberProcess.execute(
-      domainOptions,
-    );
-
-    if (registerMemberResult.isErr()) {
-      return Err(
-        new UseCaseProcessExceptions(registerMemberResult.unwrapErr()),
-      );
-    }
-
-    return Ok(this.mapper.toResponseDto(registerMemberResult.unwrap()));
+    validator: RegisterMemberValidator,
+    mapper: RegisterMemberMapper,
+    process: RegisterMemberProcess,
+  ) {
+    super(validator, mapper, process);
   }
 }

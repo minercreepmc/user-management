@@ -66,6 +66,7 @@
     "common-base-classes": "^0.21.16",
     "jest-extended": "^3.2.4",
     "nest-typeorm-common-classes": "^0.0.22",
+    "nestjs-mediator": "^0.0.5",
     "oxide.ts": "^1.1.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",

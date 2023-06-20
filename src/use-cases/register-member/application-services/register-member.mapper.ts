@@ -1,44 +1,41 @@
+import { UseCaseMapperBase } from '@base/use-cases';
 import { MemberRegisteredDomainEvent } from '@domain-events/user';
 import { Injectable } from '@nestjs/common';
+import { RegisterMemberCommand } from '@commands';
 import {
-  UserEmailValueObject,
   UserFirstNameValueObject,
   UserLastNameValueObject,
   UserNameValueObject,
   UserPasswordValueObject,
 } from '@value-objects/user';
-import {
-  RegisterMemberCommand,
-  RegisterMemberDomainOptions,
-  RegisterMemberResponseDto,
-} from '../dtos';
+import { RegisterMemberRequestDto, RegisterMemberResponseDto } from '../dtos';
 
 @Injectable()
-export class RegisterMemberMapper {
-  toDomain(command: RegisterMemberCommand): RegisterMemberDomainOptions {
-    const options: RegisterMemberDomainOptions = {};
+export class RegisterMemberMapper extends UseCaseMapperBase<RegisterMemberResponseDto> {
+  toCommand(dto: RegisterMemberRequestDto): RegisterMemberCommand {
+    const command: RegisterMemberCommand = {} as RegisterMemberCommand;
 
-    if (command.username) {
-      options.username = new UserNameValueObject(command.username);
+    if (dto.username) {
+      command.username = new UserNameValueObject(dto.username);
     }
 
-    if (command.email) {
-      options.email = new UserNameValueObject(command.email);
+    if (dto.email) {
+      command.email = new UserNameValueObject(dto.email);
     }
 
-    if (command.password) {
-      options.password = new UserPasswordValueObject(command.password);
+    if (dto.password) {
+      command.password = new UserPasswordValueObject(dto.password);
     }
 
-    if (command.firstName) {
-      options.firstName = new UserFirstNameValueObject(command.firstName);
+    if (dto.firstName) {
+      command.firstName = new UserFirstNameValueObject(dto.firstName);
     }
 
-    if (command.lastName) {
-      options.lastName = new UserLastNameValueObject(command.lastName);
+    if (dto.lastName) {
+      command.lastName = new UserLastNameValueObject(dto.lastName);
     }
 
-    return options;
+    return command;
   }
 
   toResponseDto(event: MemberRegisteredDomainEvent): RegisterMemberResponseDto {

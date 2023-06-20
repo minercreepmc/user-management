@@ -1,1 +1,0 @@
-{"version":3,"file":"register-guest.response.dto.js","sourceRoot":"","sources":["../../../../../src/use-cases/register-guest/dtos/register-guest.response.dto.ts"],"names":[],"mappings":";;;AAAA,MAAa,wBAAwB;IAGnC,YAAY,GAA6B;QACvC,IAAI,CAAC,MAAM,GAAG,GAAG,CAAC,MAAM,CAAC;QACzB,IAAI,CAAC,QAAQ,GAAG,GAAG,CAAC,QAAQ,CAAC;IAC/B,CAAC;CACF;AAPD,4DAOC"}

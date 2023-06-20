@@ -11,10 +11,8 @@ services:
       - .:/usr/src/app
     depends_on:
       - postgres
-      - rabbitmq
     links:
       - postgres
-      - rabbitmq
     env_file:
       - .env
     command: sh -c 'npm run schema:drop && npm run migration:create && npm run migration:up && npm run test -- $E2E_TEST'
@@ -31,15 +29,3 @@ services:
       - ./data/db_test:/var/lib/postgresql/data
     ports:
       - 8001:5432
-
-  rabbitmq:
-    container_name: user-management-message-broker
-    image: rabbitmq:3-management-alpine
-    hostname: rabbitmq
-    volumes:
-      - ./data/messages:/var/lib/rabbitmq:U
-    env_file:
-      - .env
-    ports:
-      - 5999:5672
-      - 15999:15672

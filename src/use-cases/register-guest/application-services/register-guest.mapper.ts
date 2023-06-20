@@ -1,9 +1,14 @@
+import { UseCaseMapperBase } from '@base/use-cases';
+import { RegisterGuestCommand } from '@commands';
 import { GuestRegisteredDomainEvent } from '@domain-events/user';
 import { Injectable } from '@nestjs/common';
-import { RegisterGuestResponseDto } from '../dtos';
+import { RegisterGuestRequestDto, RegisterGuestResponseDto } from '../dtos';
 
 @Injectable()
-export class RegisterGuestMapper {
+export class RegisterGuestMapper extends UseCaseMapperBase<RegisterGuestResponseDto> {
+  toCommand(dto: RegisterGuestRequestDto): RegisterGuestCommand {
+    return new RegisterGuestCommand();
+  }
   toResponseDto(
     guestRegistered: GuestRegisteredDomainEvent,
   ): RegisterGuestResponseDto {

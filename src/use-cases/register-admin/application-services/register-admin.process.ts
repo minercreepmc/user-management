@@ -1,3 +1,5 @@
+import { ProcessBase } from '@base/use-cases';
+import { RegisterAdminCommand } from '@commands';
 import { AdminRegisteredDomainEvent } from '@domain-events/user';
 import { UserDomainExceptions } from '@domain-exceptions/user';
 import {
@@ -5,10 +7,7 @@ import {
   UserRegistrationDomainService,
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { ProcessBase } from '@use-cases/common';
 import { UserEmailValueObject, UserNameValueObject } from '@value-objects/user';
-import { Result } from 'oxide.ts';
-import { RegisterAdminDomainOptions } from '../dtos';
 
 export type RegisterAdminProcessSuccess = AdminRegisteredDomainEvent;
 export type RegisterAdminProcessFailure = Array<
@@ -28,9 +27,9 @@ export class RegisterAdminProcess extends ProcessBase<
     super();
   }
 
-  async execute(domainOptions: RegisterAdminDomainOptions) {
+  async execute(command: RegisterAdminCommand) {
     this.init();
-    const { email, username } = domainOptions;
+    const { email, username } = command;
 
     const conditions = [
       this.checkEmailUniqueness(email),
@@ -40,7 +39,7 @@ export class RegisterAdminProcess extends ProcessBase<
     await Promise.all(conditions);
 
     if (this.exceptions.length === 0) {
-      await this.registerAdmin(domainOptions);
+      await this.registerAdmin(command);
     }
 
     return this.getValidationResult();
@@ -66,9 +65,9 @@ export class RegisterAdminProcess extends ProcessBase<
     }
   }
 
-  private async registerAdmin(options: RegisterAdminDomainOptions) {
+  private async registerAdmin(command: RegisterAdminCommand) {
     const adminRegistered = await this.userRegistrationService.registerAdmin(
-      options,
+      command,
     );
 
     this.value = adminRegistered;

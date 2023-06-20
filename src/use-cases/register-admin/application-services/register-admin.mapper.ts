@@ -1,3 +1,5 @@
+import { UseCaseMapperBase } from '@base/use-cases';
+import { RegisterAdminCommand } from '@commands';
 import { AdminRegisteredDomainEvent } from '@domain-events/user';
 import { Injectable } from '@nestjs/common';
 import {
@@ -7,39 +9,34 @@ import {
   UserNameValueObject,
   UserPasswordValueObject,
 } from '@value-objects/user';
-import {
-  RegisterAdminCommand,
-  RegisterAdminDomainOptions,
-  RegisterAdminResponseDto,
-} from '../dtos';
+import { RegisterAdminRequestDto, RegisterAdminResponseDto } from '../dtos';
 
 @Injectable()
-export class RegisterAdminMapper {
-  toDomain(command: RegisterAdminCommand): RegisterAdminDomainOptions {
-    const options: RegisterAdminDomainOptions =
-      {} as RegisterAdminDomainOptions;
+export class RegisterAdminMapper extends UseCaseMapperBase<RegisterAdminResponseDto> {
+  toCommand(dto: RegisterAdminRequestDto): RegisterAdminCommand {
+    const command: RegisterAdminCommand = {} as RegisterAdminCommand;
 
-    if (command.username) {
-      options.username = new UserNameValueObject(command.username);
+    if (dto.username) {
+      command.username = new UserNameValueObject(dto.username);
     }
 
-    if (command.email) {
-      options.email = new UserEmailValueObject(command.email);
+    if (dto.email) {
+      command.email = new UserEmailValueObject(dto.email);
     }
 
-    if (command.password) {
-      options.password = new UserPasswordValueObject(command.password);
+    if (dto.password) {
+      command.password = new UserPasswordValueObject(dto.password);
     }
 
-    if (command.firstName) {
-      options.firstName = new UserFirstNameValueObject(command.firstName);
+    if (dto.firstName) {
+      command.firstName = new UserFirstNameValueObject(dto.firstName);
     }
 
-    if (command.lastName) {
-      options.lastName = new UserLastNameValueObject(command.lastName);
+    if (dto.lastName) {
+      command.lastName = new UserLastNameValueObject(dto.lastName);
     }
 
-    return options;
+    return command;
   }
 
   toResponseDto(event: AdminRegisteredDomainEvent): RegisterAdminResponseDto {

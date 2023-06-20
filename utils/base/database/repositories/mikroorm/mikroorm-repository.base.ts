@@ -63,7 +63,6 @@ export abstract class MikroOrmRepositoryBase<
 
   async findOne(params: QueryParams<DomainModelDetails>): Promise<DomainModel> {
     const query = this.queryMapper.toQuery(params);
-    console.log(query);
     const found = await this.entityManager.findOne<OrmModel>(
       this.mikroEntityName,
       query,

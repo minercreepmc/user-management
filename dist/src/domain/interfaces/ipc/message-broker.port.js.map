@@ -1,1 +1,0 @@
-{"version":3,"file":"message-broker.port.js","sourceRoot":"","sources":["../../../../../src/domain/interfaces/ipc/message-broker.port.ts"],"names":[],"mappings":";;;AAIa,QAAA,kBAAkB,GAAG,MAAM,CAAC,cAAc,CAAC,CAAC;AAC5C,QAAA,oBAAoB,GAAG,MAAM,CAAC,gBAAgB,CAAC,CAAC;AAQhD,QAAA,wBAAwB,GAAG,MAAM,CAAC,qBAAqB,CAAC,CAAC"}

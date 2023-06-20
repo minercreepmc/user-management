@@ -12,6 +12,7 @@ import {
 } from '@use-cases/sign-in/application-services';
 import { DomainServiceModule } from '../domain';
 import { DatabaseModule } from '@modules/infrastructures/database';
+import { MediatorModule } from 'nestjs-mediator';
 
 const applicationServices: Provider[] = [
   SignInHandler,
@@ -24,7 +25,7 @@ const signInControllers = [V1SignInHttpController];
 
 const configService = new ConfigService();
 const sharedModules = [
-  CqrsModule,
+  MediatorModule,
   DatabaseModule,
   DomainServiceModule,
   JwtModule.register({

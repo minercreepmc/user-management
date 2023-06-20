@@ -11,6 +11,7 @@ import {
 import { DomainServiceModule } from '../domain';
 import { DatabaseModule } from '@modules/infrastructures/database';
 import { V1RegisterMemberRmqMessageHandler } from '@message-handlers/rmq/v1';
+import { MediatorModule } from 'nestjs-mediator';
 
 const applicationServices: Provider[] = [
   RegisterMemberHandler,
@@ -21,7 +22,7 @@ const applicationServices: Provider[] = [
 const controllers = [V1RegisterMemberHttpController];
 const messageHandlers = [V1RegisterMemberRmqMessageHandler];
 
-const sharedModules = [CqrsModule, DatabaseModule, DomainServiceModule];
+const sharedModules = [MediatorModule, DatabaseModule, DomainServiceModule];
 
 @Module({
   imports: [...sharedModules],

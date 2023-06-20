@@ -1,3 +1,5 @@
+import { ProcessBase } from '@base/use-cases';
+import { RegisterMemberCommand } from '@commands';
 import { MemberRegisteredDomainEvent } from '@domain-events/user';
 import { UserDomainExceptions } from '@domain-exceptions/user';
 import {
@@ -5,9 +7,7 @@ import {
   UserVerificationDomainService,
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { ProcessBase } from '@use-cases/common';
 import { UserEmailValueObject, UserNameValueObject } from '@value-objects/user';
-import { RegisterMemberDomainOptions } from '../dtos';
 
 export type RegisterMemberProcessSuccess = MemberRegisteredDomainEvent;
 export type RegisterMemberProcessFailure = Array<any>;
@@ -24,8 +24,8 @@ export class RegisterMemberProcess extends ProcessBase<
     super();
   }
 
-  async execute(domainOptions: RegisterMemberDomainOptions) {
-    const { username, email } = domainOptions;
+  async execute(command: RegisterMemberCommand) {
+    const { username, email } = command;
 
     this.init();
 
@@ -37,7 +37,7 @@ export class RegisterMemberProcess extends ProcessBase<
     await Promise.all(conditions);
 
     if (this.exceptions.length === 0) {
-      await this.registerMember(domainOptions);
+      await this.registerMember(command);
     }
 
     return this.getValidationResult();
@@ -66,9 +66,9 @@ export class RegisterMemberProcess extends ProcessBase<
     }
   }
 
-  private async registerMember(options: RegisterMemberDomainOptions) {
+  private async registerMember(command: RegisterMemberCommand) {
     const memberRegistered = await this.userRegistrationService.registerMember(
-      options,
+      command,
     );
 
     this.value = memberRegistered;

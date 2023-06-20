@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { RegisterAdminCommand } from '@use-cases/register-admin/dtos';
 
-export class V1RegisterAdminHttpRequest implements RegisterAdminCommand {
+export class V1RegisterAdminHttpRequest {
   @ApiProperty({
     example: 'username',
   })
