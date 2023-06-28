@@ -11,29 +11,16 @@ export class RegisterGuestProcess extends ProcessBase<
   RegisterGuestProcessSuccess,
   RegisterGuestProcessFailure
 > {
+  protected async enforceBusinessRules(): Promise<void> {
+    //
+  }
+  protected executeMainTask(): Promise<GuestRegisteredDomainEvent> {
+    return this.userRegistrationService.registerGuest();
+  }
+
   constructor(
-    private readonly userRegistration: UserRegistrationDomainService,
+    private readonly userRegistrationService: UserRegistrationDomainService,
   ) {
     super();
-  }
-
-  async execute() {
-    this.init();
-    await this.registerGuest();
-
-    return this.getValidationResult();
-  }
-  protected init(): void {
-    this.clearValue();
-    this.clearExceptions();
-  }
-
-  private async registerGuest() {
-    try {
-      const guestRegistered = await this.userRegistration.registerGuest();
-      this.value = guestRegistered;
-    } catch (err) {
-      this.exceptions.push(err);
-    }
   }
 }

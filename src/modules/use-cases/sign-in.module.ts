@@ -8,16 +8,17 @@ import { SignInHandler } from '@use-cases/sign-in';
 import {
   SignInMapper,
   SignInProcess,
-  SignInValidator,
+  SignInRequestValidator,
 } from '@use-cases/sign-in/application-services';
 import { DomainServiceModule } from '../domain';
 import { DatabaseModule } from '@modules/infrastructures/database';
 import { MediatorModule } from 'nestjs-mediator';
+import { ApplicationServicesModule } from './application-services.module';
 
 const applicationServices: Provider[] = [
   SignInHandler,
   SignInProcess,
-  SignInValidator,
+  SignInRequestValidator,
   SignInMapper,
 ];
 
@@ -28,6 +29,7 @@ const sharedModules = [
   MediatorModule,
   DatabaseModule,
   DomainServiceModule,
+  ApplicationServicesModule,
   JwtModule.register({
     secret: configService.get('JWT_SECRET'),
     signOptions: {

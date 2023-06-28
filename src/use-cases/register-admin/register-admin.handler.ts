@@ -3,7 +3,7 @@ import { RequestHandler } from 'nestjs-mediator';
 import {
   RegisterAdminMapper,
   RegisterAdminProcess,
-  RegisterAdminValidator,
+  RegisterAdminRequestValidator,
 } from './application-services';
 import { RegisterAdminRequestDto, RegisterAdminResponseDto } from './dtos';
 
@@ -13,7 +13,7 @@ export class RegisterAdminHandler extends HandlerBase<
   RegisterAdminResponseDto
 > {
   constructor(
-    validator: RegisterAdminValidator,
+    validator: RegisterAdminRequestValidator,
     process: RegisterAdminProcess,
     mapper: RegisterAdminMapper,
   ) {

@@ -7,7 +7,7 @@ import {
   UserRegistrationDomainService,
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { UserEmailValueObject, UserNameValueObject } from '@value-objects/user';
+import { UserBusinessEnforcer } from '@use-cases/application-services/process';
 
 export type RegisterAdminProcessSuccess = AdminRegisteredDomainEvent;
 export type RegisterAdminProcessFailure = Array<
@@ -20,56 +20,27 @@ export class RegisterAdminProcess extends ProcessBase<
   RegisterAdminProcessSuccess,
   RegisterAdminProcessFailure
 > {
+  protected async enforceBusinessRules(
+    command: RegisterAdminCommand,
+  ): Promise<void> {
+    const { email, username } = command;
+
+    await this.userBusinessEnforcer.emailMustBeUnique(email);
+    await this.userBusinessEnforcer.usernameMustBeUnique(username);
+  }
+  protected executeMainTask(
+    command: RegisterAdminCommand,
+  ): Promise<AdminRegisteredDomainEvent> {
+    return this.userRegistrationService.registerAdmin(command);
+  }
+
   constructor(
     private readonly userManagementService: UserManagementDomainService,
     private readonly userRegistrationService: UserRegistrationDomainService,
+    private readonly userBusinessEnforcer: UserBusinessEnforcer<RegisterAdminProcessFailure>,
   ) {
-    super();
-  }
-
-  async execute(command: RegisterAdminCommand) {
-    this.init();
-    const { email, username } = command;
-
-    const conditions = [
-      this.checkEmailUniqueness(email),
-      this.checkUsernameUniqueness(username),
-    ];
-
-    await Promise.all(conditions);
-
-    if (this.exceptions.length === 0) {
-      await this.registerAdmin(command);
-    }
-
-    return this.getValidationResult();
-  }
-  protected init(): void {
-    this.clearValue();
-    this.clearExceptions();
-  }
-
-  private async checkUsernameUniqueness(username: UserNameValueObject) {
-    const user = await this.userManagementService.findUserByUsername(username);
-
-    if (user) {
-      this.exceptions.push(new UserDomainExceptions.UsernameAlreadyExists());
-    }
-  }
-
-  private async checkEmailUniqueness(email: UserEmailValueObject) {
-    const user = await this.userManagementService.findUserByEmail(email);
-
-    if (user) {
-      this.exceptions.push(new UserDomainExceptions.EmailAlreadyExists());
-    }
-  }
-
-  private async registerAdmin(command: RegisterAdminCommand) {
-    const adminRegistered = await this.userRegistrationService.registerAdmin(
-      command,
-    );
-
-    this.value = adminRegistered;
+    super({
+      businessEnforcer: userBusinessEnforcer,
+    });
   }
 }

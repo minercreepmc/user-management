@@ -6,20 +6,26 @@ import { RegisterAdminHandler } from '@use-cases/register-admin';
 import {
   RegisterAdminMapper,
   RegisterAdminProcess,
-  RegisterAdminValidator,
+  RegisterAdminRequestValidator,
 } from '@use-cases/register-admin/application-services';
 import { DomainServiceModule } from '../domain';
 import { DatabaseModule } from '@modules/infrastructures/database';
 import { MediatorModule } from 'nestjs-mediator';
+import { ApplicationServicesModule } from './application-services.module';
 
 const applicationServices: Provider[] = [
   RegisterAdminHandler,
   RegisterAdminProcess,
-  RegisterAdminValidator,
+  RegisterAdminRequestValidator,
   RegisterAdminMapper,
 ];
 const controllers = [V1RegisterAdminHttpController];
-const sharedModules = [MediatorModule, DatabaseModule, DomainServiceModule];
+const sharedModules = [
+  MediatorModule,
+  DatabaseModule,
+  DomainServiceModule,
+  ApplicationServicesModule,
+];
 
 @Module({
   imports: [...sharedModules],

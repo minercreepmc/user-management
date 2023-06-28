@@ -17,6 +17,7 @@ const mikroOrmConfig: MikroOrmModuleSyncOptions = {
   migrations: {
     pathTs: './src/infrastructures/database/migrations',
   },
+  allowGlobalContext: true
 };
 
 export default mikroOrmConfig;

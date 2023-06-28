@@ -7,7 +7,7 @@ export class RegisterMemberRequestDto extends RequestDtoBase<RegisterMemberRespo
   firstName?: string;
   lastName?: string;
 
-  constructor(dtos: Omit<RegisterMemberRequestDto, 'returnType'>) {
+  constructor(dtos: any) {
     super();
     this.username = dtos.username;
     this.password = dtos.password;

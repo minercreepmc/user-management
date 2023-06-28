@@ -7,9 +7,9 @@ export class V1RegisterGuestHttpResponse {
   userId: string;
   @ApiProperty()
   message: string;
-  constructor(dtos: V1RegisterGuestHttpResponse) {
+  constructor(dtos: Omit<V1RegisterGuestHttpResponse, 'message'>) {
     this.username = dtos.username;
     this.userId = dtos.userId;
-    this.message = dtos.message;
+    this.message = 'guest registered successfully.';
   }
 }

@@ -1,0 +1,1 @@
+{"version":3,"file":"rpc.result.js","sourceRoot":"","sources":["../../../../../../utils/base/base/interface-adapters/message-handlers/rpc.result.ts"],"names":[],"mappings":";;;AAAA,yDAAqD;AAGrD,MAAa,SAAU,SAAQ,4BAAY;IACzC,YAA6B,MAA0B;QACrD,KAAK,CAAC,MAAM,CAAC,CAAC;QADa,WAAM,GAAN,MAAM,CAAoB;IAEvD,CAAC;IAED,SAAS;QACP,OAAO,IAAI,CAAC,MAAM,CAAC;IACrB,CAAC;CACF;AARD,8BAQC"}

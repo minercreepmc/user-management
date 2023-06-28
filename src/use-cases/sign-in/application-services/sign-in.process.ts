@@ -1,13 +1,10 @@
 import { ProcessBase } from '@base/use-cases';
 import { SignInCommand } from '@commands';
 import { UserDomainExceptions } from '@domain-exceptions/user';
-import {
-  PasswordManagementDomainService,
-  UserManagementDomainService,
-} from '@domain-services';
+import { PasswordManagementDomainService } from '@domain-services';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserEmailValueObject } from '@value-objects/user';
+import { UserBusinessEnforcer } from '@use-cases/application-services/process';
 
 export type AuthenticatedResult = {
   accessToken: string;
@@ -24,36 +21,15 @@ export class SignInProcess extends ProcessBase<
   SignInProcessSuccess,
   SignInProcessFailure
 > {
-  constructor(
-    private readonly userManagementService: UserManagementDomainService,
-    private readonly passwordManagementService: PasswordManagementDomainService,
-    private readonly jwtService: JwtService,
-  ) {
-    super();
-  }
-
-  async execute(command: SignInCommand) {
+  protected async enforceBusinessRules(command: SignInCommand): Promise<void> {
     const { email } = command;
 
-    await this.checkUserMustHaveRegistered(email);
-
-    if (this.exceptions.length === 0) {
-      await this.signIn(command);
-    }
-
-    return this.getValidationResult();
+    await this.userBusinessEnforcer.userMustHaveRegistered(email);
   }
-  protected init(): void {
-    this.clearValue();
-    this.clearExceptions();
-  }
-
-  async checkUserMustHaveRegistered(email: UserEmailValueObject) {
-    const user = await this.userManagementService.findUserByEmail(email);
-
-    if (!user) {
-      this.exceptions.push(new UserDomainExceptions.CredentialDoesNotValid());
-    }
+  protected executeMainTask(
+    command: SignInCommand,
+  ): Promise<AuthenticatedResult> {
+    return this.signIn(command);
   }
 
   async signIn(userProvide: SignInCommand) {
@@ -69,8 +45,18 @@ export class SignInProcess extends ProcessBase<
       username: user.username.unpack(),
     };
 
-    this.value = {
+    return {
       accessToken: await this.jwtService.signAsync(payload),
     };
+  }
+
+  constructor(
+    private readonly passwordManagementService: PasswordManagementDomainService,
+    private readonly jwtService: JwtService,
+    private readonly userBusinessEnforcer: UserBusinessEnforcer<SignInProcessFailure>,
+  ) {
+    super({
+      businessEnforcer: userBusinessEnforcer,
+    });
   }
 }

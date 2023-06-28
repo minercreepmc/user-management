@@ -4,7 +4,7 @@ export class SignInRequestDto extends RequestDtoBase<SignInResponseDto> {
   username: string;
   email: string;
   password: string;
-  constructor(dto: Omit<SignInRequestDto, 'returnType'>) {
+  constructor(dto: any) {
     super();
     this.username = dto.username;
     this.email = dto.email;

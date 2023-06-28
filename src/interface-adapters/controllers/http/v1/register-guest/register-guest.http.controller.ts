@@ -4,7 +4,6 @@ import {
   RegisterGuestRequestDto,
   RegisterGuestResponseDto,
 } from '@use-cases/register-guest/dtos';
-import { RegisterMemberResponseDto } from '@use-cases/register-member/dtos';
 import { Mediator } from 'nestjs-mediator';
 import { V1RegisterMemberHttpResponse } from '../register-member';
 import { V1RegisterGuestHttpRequest } from './register-guest.http.request';

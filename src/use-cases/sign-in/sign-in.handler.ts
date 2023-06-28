@@ -3,7 +3,7 @@ import { RequestHandler } from 'nestjs-mediator';
 import {
   SignInMapper,
   SignInProcess,
-  SignInValidator,
+  SignInRequestValidator,
 } from './application-services';
 import { SignInRequestDto, SignInResponseDto } from './dtos';
 
@@ -13,7 +13,7 @@ export class SignInHandler extends HandlerBase<
   SignInResponseDto
 > {
   constructor(
-    validator: SignInValidator,
+    validator: SignInRequestValidator,
     mapper: SignInMapper,
     process: SignInProcess,
   ) {

@@ -1,7 +1,7 @@
 import {
   RequestDtoBase,
-  UseCaseCommandValidationExceptions,
   UseCaseProcessExceptions,
+  UseCaseRequestValidationExceptions,
 } from '@base/use-cases';
 import {
   Body,
@@ -31,7 +31,7 @@ export abstract class HttpPutControllerBase<THttpRequest, THttpResponse> {
         return this.createHttpResponse(response);
       },
       Err: (exception: Error) => {
-        if (exception instanceof UseCaseCommandValidationExceptions) {
+        if (exception instanceof UseCaseRequestValidationExceptions) {
           throw new UnprocessableEntityException(exception.exceptions);
         }
         if (exception instanceof UseCaseProcessExceptions) {

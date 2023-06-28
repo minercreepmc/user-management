@@ -1,6 +1,9 @@
 import { UserDomainExceptions } from '@domain-exceptions/user';
-import { ICommand } from '@nestjs/cqrs';
-import { TranslateOptions, ValidatorBase } from '@base/use-cases';
+import {
+  TranslateOptions,
+  RequestValidatorBase,
+  RequestDtoBase,
+} from '@base/use-cases';
 import {
   UserEmailValueObject,
   UserFirstNameValueObject,
@@ -8,14 +11,22 @@ import {
   UserNameValueObject,
   UserPasswordValueObject,
 } from '@value-objects/user';
-import {
-  ValidationResponse,
-  ValidationExceptionBase,
-} from 'common-base-classes';
+import { ValidationExceptionBase } from 'common-base-classes';
 
-export abstract class UserValidator extends ValidatorBase {
-  abstract validate(command: ICommand): ValidationResponse;
-  protected translateExceptionToUserFriendlyMessage(
+export interface UserRequestDto extends RequestDtoBase<any> {
+  email: string;
+  password: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+}
+
+export class UserRequestValidator extends RequestValidatorBase {
+  _validate(dto: UserRequestDto): void {
+    throw new Error('Method not implemented.');
+  }
+
+  translateExceptionToUserFriendlyMessage(
     options: TranslateOptions,
   ): ValidationExceptionBase {
     const { context, exception } = options;
